@@ -24,10 +24,7 @@ Widget buildTextField(
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: hintText,
-              hintStyle: Theme.of(context)
-                  .textTheme
-                  .subtitle1!
-                  .merge(TextStyle(color: Colors.black.withOpacity(0.35))),
+              hintStyle: Theme.of(context).textTheme.subtitle1!,
               contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
               icon: Container(
                   width: 15,

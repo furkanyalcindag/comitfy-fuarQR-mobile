@@ -1,7 +1,7 @@
 {
-  "signIn": "Sign In",
-  "login": "Login",
+  "signIn": "Kayıt Ol",
+  "login": "Giriş Yap",
   "email": "Email",
-  "password": "Password"
+  "password": "Şifre"
 }
   

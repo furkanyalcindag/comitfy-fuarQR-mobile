@@ -6,75 +6,172 @@ class Themes {
   static ThemeData lightTheme = ThemeData(
       brightness: Brightness.light,
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      primarySwatch: Colors.teal,
-      primaryColor: white,
       scaffoldBackgroundColor: white,
       iconTheme: const IconThemeData(color: black),
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: white,
+        primaryContainer: white,
+        secondaryContainer: whiteSecondary,
+      ),
+      elevatedButtonTheme: const ElevatedButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: MaterialStatePropertyAll(primary),
+          foregroundColor: MaterialStatePropertyAll(whiteSecondary),
+          textStyle:
+              MaterialStatePropertyAll(TextStyle(fontWeight: FontWeight.bold)),
+        ),
+      ),
 
       /// Generator: https://m2.material.io/design/typography/the-type-system.html#type-scale
       textTheme: TextTheme(
         headline1: GoogleFonts.varelaRound(
-            fontSize: 99, fontWeight: FontWeight.w300, letterSpacing: -1.5),
+            color: lightThemeTextColor,
+            fontSize: 99,
+            fontWeight: FontWeight.w300,
+            letterSpacing: -1.5),
         headline2: GoogleFonts.varelaRound(
-            fontSize: 62, fontWeight: FontWeight.w300, letterSpacing: -0.5),
-        headline3:
-            GoogleFonts.varelaRound(fontSize: 49, fontWeight: FontWeight.w400),
+            color: lightThemeTextColor,
+            fontSize: 62,
+            fontWeight: FontWeight.w300,
+            letterSpacing: -0.5),
+        headline3: GoogleFonts.varelaRound(
+            color: lightThemeTextColor,
+            fontSize: 49,
+            fontWeight: FontWeight.w400),
         headline4: GoogleFonts.varelaRound(
-            fontSize: 35, fontWeight: FontWeight.w400, letterSpacing: 0.25),
-        headline5:
-            GoogleFonts.varelaRound(fontSize: 25, fontWeight: FontWeight.w400),
+            color: lightThemeTextColor,
+            fontSize: 35,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.25),
+        headline5: GoogleFonts.varelaRound(
+            color: lightThemeTextColor,
+            fontSize: 25,
+            fontWeight: FontWeight.w400),
         headline6: GoogleFonts.varelaRound(
-            fontSize: 21, fontWeight: FontWeight.w500, letterSpacing: 0.15),
+            color: lightThemeTextColor,
+            fontSize: 21,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.15),
         subtitle1: GoogleFonts.varelaRound(
-            fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0.15),
+            color: lightThemeTextColor,
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.15),
         subtitle2: GoogleFonts.varelaRound(
-            fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 0.1),
+            color: lightThemeTextColor,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.1),
         bodyText1: GoogleFonts.openSans(
-            fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0.5),
+            color: lightThemeTextColor,
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.5),
         bodyText2: GoogleFonts.openSans(
-            fontSize: 14, fontWeight: FontWeight.w400, letterSpacing: 0.25),
+            color: lightThemeTextColor,
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.25),
         button: GoogleFonts.openSans(
-            fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 1.25),
+            color: lightThemeTextColor,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 1.25),
         caption: GoogleFonts.openSans(
-            fontSize: 12, fontWeight: FontWeight.w400, letterSpacing: 0.4),
+            color: lightThemeTextColor,
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.4),
         overline: GoogleFonts.openSans(
-            fontSize: 10, fontWeight: FontWeight.w400, letterSpacing: 1.5),
+            color: lightThemeTextColor,
+            fontSize: 10,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 1.5),
       ));
 
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     visualDensity: VisualDensity.adaptivePlatformDensity,
-    primarySwatch: Colors.teal,
-    primaryColor: black,
+    colorScheme: ColorScheme.fromSeed(
+      brightness: Brightness.dark,
+      seedColor: black,
+      primaryContainer: black,
+      secondaryContainer: blackSecondary,
+    ),
     scaffoldBackgroundColor: black,
     iconTheme: const IconThemeData(color: white),
+    elevatedButtonTheme: const ElevatedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: MaterialStatePropertyAll(blackSecondary),
+        foregroundColor: MaterialStatePropertyAll(primary),
+        textStyle:
+            MaterialStatePropertyAll(TextStyle(fontWeight: FontWeight.bold)),
+      ),
+    ),
     textTheme: TextTheme(
       headline1: GoogleFonts.varelaRound(
-          fontSize: 99, fontWeight: FontWeight.w300, letterSpacing: -1.5),
+          color: blackThemeTextColor,
+          fontSize: 99,
+          fontWeight: FontWeight.w300,
+          letterSpacing: -1.5),
       headline2: GoogleFonts.varelaRound(
-          fontSize: 62, fontWeight: FontWeight.w300, letterSpacing: -0.5),
-      headline3:
-          GoogleFonts.varelaRound(fontSize: 49, fontWeight: FontWeight.w400),
+          color: blackThemeTextColor,
+          fontSize: 62,
+          fontWeight: FontWeight.w300,
+          letterSpacing: -0.5),
+      headline3: GoogleFonts.varelaRound(
+          color: blackThemeTextColor,
+          fontSize: 49,
+          fontWeight: FontWeight.w400),
       headline4: GoogleFonts.varelaRound(
-          fontSize: 35, fontWeight: FontWeight.w400, letterSpacing: 0.25),
-      headline5:
-          GoogleFonts.varelaRound(fontSize: 25, fontWeight: FontWeight.w400),
+          color: blackThemeTextColor,
+          fontSize: 35,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0.25),
+      headline5: GoogleFonts.varelaRound(
+          color: blackThemeTextColor,
+          fontSize: 25,
+          fontWeight: FontWeight.w400),
       headline6: GoogleFonts.varelaRound(
-          fontSize: 21, fontWeight: FontWeight.w500, letterSpacing: 0.15),
+          color: blackThemeTextColor,
+          fontSize: 21,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.15),
       subtitle1: GoogleFonts.varelaRound(
-          fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0.15),
+          color: blackThemeTextColor,
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0.15),
       subtitle2: GoogleFonts.varelaRound(
-          fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 0.1),
+          color: blackThemeTextColor,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.1),
       bodyText1: GoogleFonts.openSans(
-          fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0.5),
+          color: blackThemeTextColor,
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0.5),
       bodyText2: GoogleFonts.openSans(
-          fontSize: 14, fontWeight: FontWeight.w400, letterSpacing: 0.25),
+          color: blackThemeTextColor,
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0.25),
       button: GoogleFonts.openSans(
-          fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 1.25),
+          color: blackThemeTextColor,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 1.25),
       caption: GoogleFonts.openSans(
-          fontSize: 12, fontWeight: FontWeight.w400, letterSpacing: 0.4),
+          color: blackThemeTextColor,
+          fontSize: 12,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0.4),
       overline: GoogleFonts.openSans(
-          fontSize: 10, fontWeight: FontWeight.w400, letterSpacing: 1.5),
+          color: blackThemeTextColor,
+          fontSize: 10,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 1.5),
     ),
   );
 }
