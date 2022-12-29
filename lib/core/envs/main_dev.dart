@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:fuar_qr/core/config/app_config.dart';
 import 'package:fuar_qr/core/utility/theme_notifier.dart';
+import 'package:fuar_qr/view/routers/authentication_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,6 +29,9 @@ void main() {
 
     runApp(MultiProvider(
       providers: [
+        Provider<AuthenticationManager>(
+          create: (context) => AuthenticationManager(context: context),
+        ),
         ChangeNotifierProvider<ThemeModeNotifier>(
           create: (_) => ThemeModeNotifier(ThemeMode.values[themeMode]),
         ),

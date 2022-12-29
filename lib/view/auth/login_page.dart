@@ -7,6 +7,8 @@ import 'package:fuar_qr/core/utility/cache_manager.dart';
 import 'package:fuar_qr/core/utility/constants.dart';
 import 'package:fuar_qr/core/utility/theme_choice.dart';
 import 'package:fuar_qr/view/componentbuilders/textfield_builder.dart';
+import 'package:fuar_qr/view/routers/login_router.dart';
+import 'package:get/route_manager.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -49,6 +51,7 @@ class _LoginPageState extends State<LoginPage> with CacheManager {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           textColor: Colors.green,
           fontSize: 16.0);
+      Get.off(() => LoginRouter());
     } else {
       String errorMsg = AppLocalizations.of(context)!.errorLogin;
       Fluttertoast.showToast(
@@ -101,7 +104,7 @@ class _LoginPageState extends State<LoginPage> with CacheManager {
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   AppLocalizations.of(context)!.login,
@@ -143,7 +146,7 @@ class _LoginPageState extends State<LoginPage> with CacheManager {
                         context: context,
                         controller: _passwordTextFieldController,
                         isPassword: true,
-                        showPassword: _isPasswordVisible ,
+                        showPassword: _isPasswordVisible,
                         suffixIcon: IconButton(
                           splashRadius: 1,
                           icon: Icon(
@@ -151,7 +154,7 @@ class _LoginPageState extends State<LoginPage> with CacheManager {
                             _isPasswordVisible
                                 ? Icons.visibility
                                 : Icons.visibility_off,
-                            color: Theme.of(context).primaryColorDark,
+                            color: Theme.of(context).primaryColorLight,
                           ),
                           onPressed: () {
                             // Update the state i.e. toogle the state of _isPasswordVisible variable
@@ -164,7 +167,7 @@ class _LoginPageState extends State<LoginPage> with CacheManager {
                           if (value!.isEmpty == true) {
                             return AppLocalizations.of(context)!.errorPassEmpty;
                           }
-                          if (value.length < 8) {
+                          if (value.length < 6) {
                             return AppLocalizations.of(context)!
                                 .errorPassLength;
                           }
@@ -191,11 +194,25 @@ class _LoginPageState extends State<LoginPage> with CacheManager {
                                     Text(AppLocalizations.of(context)!.loading),
                               ),
                             ),
-                      ThemeChoice(),
                     ],
                   ),
                 ),
               ],
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 0,
+          width: MediaQuery.of(context).size.width,
+          child: Container(
+            color: Colors.transparent,
+            child: Text(
+              "Comitfy",
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle2!
+                  .merge(TextStyle(color: primary)),
             ),
           ),
         ),
