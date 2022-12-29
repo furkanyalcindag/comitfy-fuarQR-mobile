@@ -3,7 +3,10 @@
   "login": "Giriş Yap",
   "email": "Email",
   "password": "Password",
+  "success": "Success",
   "errorEmailEmpty":  "Email cannot be empty",
   "errorPassEmpty": "Password cannot be empty",
-  "errorPassLength": "Password length must be 8 or greater"
+  "errorPassLength": "Password length must be 8 or greater",
+  "errorLogin": "Please enter a valid user",
+  "loading": "Trying..."
 }

@@ -172,7 +172,7 @@ class _HomeState extends State<Home> {
 
   Future<void> _getArticleTitle({required String? uuid}) async {
     if (uuid != null && uuid.isNotEmpty) {
-      var data = await ArticleByIdApi.fetchArticleByID(
+      var data = await ArticleService.fetchArticleByID(
         path: "http://89.252.140.57:8080/article/",
         uuid: uuid,
       );

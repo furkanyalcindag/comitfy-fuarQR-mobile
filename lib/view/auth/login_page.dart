@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fuar_qr/core/config/app_config.dart';
+import 'package:fuar_qr/core/services/authentication/login_manager.dart';
+import 'package:fuar_qr/core/utility/cache_manager.dart';
 import 'package:fuar_qr/core/utility/constants.dart';
 import 'package:fuar_qr/core/utility/theme_choice.dart';
 import 'package:fuar_qr/view/componentbuilders/textfield_builder.dart';
-import 'package:fuar_qr/view/home/home.dart';
-import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,34 +15,62 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with CacheManager {
+  late final LoginService loginService;
   late final TextEditingController _emailTextFieldController;
   late final TextEditingController _passwordTextFieldController;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool _isAbleToPushButton = true;
+  bool _isPasswordVisible = false;
 
   @override
   void initState() {
     super.initState();
     _emailTextFieldController = TextEditingController();
     _passwordTextFieldController = TextEditingController();
+    loginService = LoginService();
   }
 
   Future<void> fetchUserLogin(String email, String password) async {
+    setState(() {
+      _isAbleToPushButton = false;
+    });
     final _loginUrl =
         AppConfig.of(context)!.baseURL + AppConfig.of(context)!.loginPath;
-    print(_loginUrl);
-    //final response = await loginService.fetchLogin(_baseUrl, email, password);
-    /*if (response != null) {
+    final response = await loginService.fetchLogin(_loginUrl, email, password);
+    if (response!.exception == null) {
       saveToken(response.token ?? '');
-      navigateToHome();
-    }*/
+      String successMsg = AppLocalizations.of(context)!.success;
+      Fluttertoast.showToast(
+          msg: successMsg,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          textColor: Colors.green,
+          fontSize: 16.0);
+    } else {
+      String errorMsg = AppLocalizations.of(context)!.errorLogin;
+      Fluttertoast.showToast(
+          msg: errorMsg,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          textColor: Colors.red,
+          fontSize: 16.0);
+      setState(() {
+        _isAbleToPushButton = true;
+      });
+    }
   }
 
-  void changeButton() {
+  void changeButton() async {
     setState(() {
-      fetchUserLogin(
-          _emailTextFieldController.text, _passwordTextFieldController.text);
+      _isAbleToPushButton = false;
     });
+    await fetchUserLogin(
+        _emailTextFieldController.text, _passwordTextFieldController.text);
   }
 
   @override
@@ -86,8 +112,12 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                 ),
+                const Divider(
+                  color: primary,
+                  height: 10,
+                ),
                 const SizedBox(
-                  height: 60,
+                  height: 50,
                 ),
                 Form(
                   key: formKey,
@@ -113,6 +143,23 @@ class _LoginPageState extends State<LoginPage> {
                         context: context,
                         controller: _passwordTextFieldController,
                         isPassword: true,
+                        showPassword: _isPasswordVisible ,
+                        suffixIcon: IconButton(
+                          splashRadius: 1,
+                          icon: Icon(
+                            // Based on passwordVisible state choose the icon
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                          onPressed: () {
+                            // Update the state i.e. toogle the state of _isPasswordVisible variable
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
+                        ),
                         validator: (value) {
                           if (value!.isEmpty == true) {
                             return AppLocalizations.of(context)!.errorPassEmpty;
@@ -127,14 +174,23 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(
                         height: 50,
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (formKey.currentState?.validate() ?? false) {
-                            return changeButton();
-                          }
-                        },
-                        child: Text(AppLocalizations.of(context)!.login),
-                      ),
+                      _isAbleToPushButton
+                          ? ElevatedButton(
+                              onPressed: () {
+                                if (formKey.currentState?.validate() ?? false) {
+                                  return changeButton();
+                                }
+                              },
+                              child: Text(AppLocalizations.of(context)!.login),
+                            )
+                          : Opacity(
+                              opacity: 0.5,
+                              child: ElevatedButton(
+                                onPressed: () => {},
+                                child:
+                                    Text(AppLocalizations.of(context)!.loading),
+                              ),
+                            ),
                       ThemeChoice(),
                     ],
                   ),

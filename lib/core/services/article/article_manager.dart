@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 
-class ArticleByIdApi {
+class ArticleService {
   static Future<Map<String, dynamic>> fetchArticleByID(
       {required String path, required String uuid}) async {
     // late List<Article> list;

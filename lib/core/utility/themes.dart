@@ -10,6 +10,7 @@ class Themes {
       iconTheme: const IconThemeData(color: black),
       primaryColor: white,
       colorScheme: ColorScheme.fromSeed(
+        primary: primary,
         seedColor: white,
         primaryContainer: white,
         secondaryContainer: whiteSecondary,
@@ -94,6 +95,7 @@ class Themes {
     brightness: Brightness.dark,
     visualDensity: VisualDensity.adaptivePlatformDensity,
     colorScheme: ColorScheme.fromSeed(
+      primary: primary,
       brightness: Brightness.dark,
       seedColor: black,
       primaryContainer: black,
