@@ -2,6 +2,9 @@
   "signIn": "Kayıt Ol",
   "login": "Giriş Yap",
   "email": "Email",
-  "password": "Şifre"
+  "password": "Şifre",
+  "errorEmailEmpty":  "Email boş olmamalı",
+  "errorPassEmpty": "Şifre boş olmamalı",
+  "errorPassLength": "Şifre en az 8 karakter olmalı"
 }
   

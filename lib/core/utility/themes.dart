@@ -8,6 +8,7 @@ class Themes {
       visualDensity: VisualDensity.adaptivePlatformDensity,
       scaffoldBackgroundColor: white,
       iconTheme: const IconThemeData(color: black),
+      primaryColor: white,
       colorScheme: ColorScheme.fromSeed(
         seedColor: white,
         primaryContainer: white,

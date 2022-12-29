@@ -12,7 +12,8 @@ void main() {
   var configuredApp = AppConfig(
     appDisplayName: "FuarQR",
     appInternalId: 1,
-    baseURL: '',
+    baseURL: 'http://89.252.140.57:8080',
+    loginPath: '/auth/login',
     child: MyApp(),
   );
   // Provides firebase and internet connection

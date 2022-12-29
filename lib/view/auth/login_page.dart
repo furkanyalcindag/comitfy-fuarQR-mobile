@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fuar_qr/core/config/app_config.dart';
 import 'package:fuar_qr/core/utility/constants.dart';
 import 'package:fuar_qr/core/utility/theme_choice.dart';
 import 'package:fuar_qr/view/componentbuilders/textfield_builder.dart';
@@ -17,12 +18,33 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late final TextEditingController emailTextFieldController;
+  late final TextEditingController _emailTextFieldController;
+  late final TextEditingController _passwordTextFieldController;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    emailTextFieldController = TextEditingController();
+    _emailTextFieldController = TextEditingController();
+    _passwordTextFieldController = TextEditingController();
+  }
+
+  Future<void> fetchUserLogin(String email, String password) async {
+    final _loginUrl =
+        AppConfig.of(context)!.baseURL + AppConfig.of(context)!.loginPath;
+    print(_loginUrl);
+    //final response = await loginService.fetchLogin(_baseUrl, email, password);
+    /*if (response != null) {
+      saveToken(response.token ?? '');
+      navigateToHome();
+    }*/
+  }
+
+  void changeButton() {
+    setState(() {
+      fetchUserLogin(
+          _emailTextFieldController.text, _passwordTextFieldController.text);
+    });
   }
 
   @override
@@ -67,31 +89,55 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 60,
                 ),
-                Column(
-                  children: [
-                    buildTextField(
-                      labelText: AppLocalizations.of(context)!.email,
-                      context: context,
-                      controller: emailTextFieldController,
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    buildTextField(
-                      labelText: AppLocalizations.of(context)!.password,
-                      context: context,
-                      controller: emailTextFieldController,
-                    ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    ElevatedButton(
-                      onPressed: () => {
-                        Get.off(() => Home()),
-                      },
-                      child: Text(AppLocalizations.of(context)!.login),
-                    ),
-                  ],
+                Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      buildTextField(
+                        labelText: AppLocalizations.of(context)!.email,
+                        context: context,
+                        controller: _emailTextFieldController,
+                        validator: (value) {
+                          if (value!.isEmpty == true) {
+                            return AppLocalizations.of(context)!
+                                .errorEmailEmpty;
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      buildTextField(
+                        labelText: AppLocalizations.of(context)!.password,
+                        context: context,
+                        controller: _passwordTextFieldController,
+                        isPassword: true,
+                        validator: (value) {
+                          if (value!.isEmpty == true) {
+                            return AppLocalizations.of(context)!.errorPassEmpty;
+                          }
+                          if (value.length < 8) {
+                            return AppLocalizations.of(context)!
+                                .errorPassLength;
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (formKey.currentState?.validate() ?? false) {
+                            return changeButton();
+                          }
+                        },
+                        child: Text(AppLocalizations.of(context)!.login),
+                      ),
+                      ThemeChoice(),
+                    ],
+                  ),
                 ),
               ],
             ),

@@ -2,5 +2,8 @@
   "signIn": "Kayıt Ol",
   "login": "Giriş Yap",
   "email": "Email",
-  "password": "Password"
+  "password": "Password",
+  "errorEmailEmpty":  "Email cannot be empty",
+  "errorPassEmpty": "Password cannot be empty",
+  "errorPassLength": "Password length must be 8 or greater"
 }
