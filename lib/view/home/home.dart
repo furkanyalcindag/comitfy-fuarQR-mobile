@@ -12,6 +12,7 @@ import 'package:fuar_qr/core/services/article/article_manager.dart';
 import 'package:fuar_qr/core/utility/constants.dart';
 import 'package:fuar_qr/core/utility/theme_choice.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -44,6 +45,11 @@ class _HomeState extends State<Home> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
     scanAreaHeight = MediaQuery.of(context).size.height * 0.5;
@@ -59,14 +65,155 @@ class _HomeState extends State<Home> {
                 child: Column(
                   children: [
                     Expanded(
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            child: ThemeChoice()),
+                      child: SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: SizedBox(
+                            width: double.maxFinite,
+                            // Container of details
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: ListView(
+                                    physics: const BouncingScrollPhysics(),
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          // Detail Texts with different styles
+                                          RichText(
+                                            textAlign: TextAlign.center,
+                                            // Name title and other titles with values
+                                            text: TextSpan(
+                                              text:
+                                                  "${AppLocalizations.of(context)!.name}\n",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle1!
+                                                  .merge(
+                                                    const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: white,
+                                                    ),
+                                                  ),
+                                              children: [
+                                                // Name Value
+                                                TextSpan(
+                                                  text:
+                                                      "Yunus Ebubekir Abdul El sadddsdsfdsfdsfsdfsdfdsfsDFSDFHSJFHJKSFSDFSJKFJSDHHDSJSFJKDFJDFJSDFJDFFKJJFDJKFJKFJHDFJKDSFJSDFJam\n",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle1!
+                                                      .merge(
+                                                        const TextStyle(
+                                                          color: white,
+                                                        ),
+                                                      ),
+                                                ),
+                                                // Company Name Title
+                                                TextSpan(
+                                                  text:
+                                                      "${AppLocalizations.of(context)!.companyName}\n",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle1!
+                                                      .merge(
+                                                        const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: white,
+                                                        ),
+                                                      ),
+                                                ),
+                                                // Company Name Value
+                                                TextSpan(
+                                                  text:
+                                                      "Comitfy Bilişim Teknolojileri ve Yazılımı\n",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle1!
+                                                      .merge(
+                                                        const TextStyle(
+                                                          color: white,
+                                                        ),
+                                                      ),
+                                                ),
+                                                // TelNo Title
+                                                TextSpan(
+                                                  text:
+                                                      "${AppLocalizations.of(context)!.telNo}\n",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle1!
+                                                      .merge(
+                                                        const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: white,
+                                                        ),
+                                                      ),
+                                                ),
+                                                // TelNo Value
+                                                TextSpan(
+                                                  text:
+                                                      "(TR)+90542 103 20 65\n",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle1!
+                                                      .merge(
+                                                        const TextStyle(
+                                                          color: white,
+                                                        ),
+                                                      ),
+                                                ),
+                                                // TelNo Title
+                                                TextSpan(
+                                                  text:
+                                                      "${AppLocalizations.of(context)!.email}\n",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle1!
+                                                      .merge(
+                                                        const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: white,
+                                                        ),
+                                                      ),
+                                                ),
+                                                // TelNo Value
+                                                TextSpan(
+                                                  text:
+                                                      "ASDADASDASJKDJ@gmail.com\n",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle1!
+                                                      .merge(
+                                                        const TextStyle(
+                                                          color: white,
+                                                        ),
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                    Container(
+                    // We wont use expanded since the scan are can change
+                    SizedBox(
                       width: scanAreaWidth,
                       height: scanAreaHeight,
                     ),

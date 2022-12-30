@@ -8,5 +8,8 @@
   "errorPassEmpty": "Password cannot be empty",
   "errorPassLength": "Password length must be 8 or greater",
   "errorLogin": "Please enter a valid user",
-  "loading": "Trying..."
+  "loading": "Trying...",
+  "name": "Name/Surname: ",
+  "companyName": "Company: ",
+  "telNo": "TelNo: "
 }

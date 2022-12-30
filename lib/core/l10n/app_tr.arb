@@ -8,6 +8,9 @@
   "errorPassEmpty": "Şifre boş olmamalı",
   "errorPassLength": "Şifre en az 8 karakter olmalı",
   "errorLogin": "Lütfen geçerli bir kullanıcı girin",
-  "loading": "Deneniyor..."
+  "loading": "Deneniyor...",
+  "name": "İsim/Soyisim: ",
+  "companyName": "Firma: ",
+  "telNo": "TelNo: "
 }
   
