@@ -11,5 +11,6 @@
   "loading": "Trying...",
   "name": "Name/Surname: ",
   "companyName": "Company: ",
-  "telNo": "TelNo: "
+  "telNo": "TelNo: ",
+  "canBeScrolled": "Can be scrolled"
 }

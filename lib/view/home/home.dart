@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -11,6 +12,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fuar_qr/core/services/article/article_manager.dart';
 import 'package:fuar_qr/core/utility/constants.dart';
 import 'package:fuar_qr/core/utility/theme_choice.dart';
+import 'package:fuar_qr/core/utility/themes.dart';
+import 'package:fuar_qr/view/componentbuilders/qrscanner_user_information_builder.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -22,16 +25,24 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Barcode? result;
-  Map<String, dynamic>? _articleData;
-  QRViewController? controller;
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  Color _scannerBorderColor = Colors.red;
+  // Data
   bool _isCameraPaused = false;
   bool _isFlashActive = false;
-  // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
+  bool _isUserInfoScrollScrollable = false;
+  bool _isShowUserInfoScrollHasMoreDataButton = false;
   var scanAreaHeight;
   var scanAreaWidth;
+  Barcode? result;
+  Map<String, dynamic>? _articleData;
+
+  // Controllers
+  late ScrollController _scrollController;
+  var optimizeTimer = Timer(Duration.zero, () => {});
+  QRViewController? controller;
+
+  // View control
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  Color _scannerBorderColor = Colors.red;
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
@@ -47,6 +58,38 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController()..addListener(_controlScroll);
+  }
+
+  Future<void> _controlScroll() async {
+    optimizeTimer.cancel();
+    optimizeTimer = Timer(
+      const Duration(milliseconds: 25),
+      () async {
+        if (_scrollController.hasClients) {
+          // If didnt scrolled yet
+          if (_isUserInfoScrollScrollable &&
+              _scrollController.offset <=
+                  _scrollController.position.maxScrollExtent - 25 &&
+              _scrollController.position.maxScrollExtent >= 5.0) {
+            // We dont want to setstate and build whole screen everytime since its already true lol
+            if (!_isShowUserInfoScrollHasMoreDataButton) {
+              setState(() {
+                _isShowUserInfoScrollHasMoreDataButton = true;
+              });
+            }
+          } else if (_scrollController.offset >=
+              _scrollController.position.maxScrollExtent - 25) {
+            // We dont want to setstate and build whole screen everytime since its already true lol
+            if (_isShowUserInfoScrollHasMoreDataButton) {
+              setState(() {
+                _isShowUserInfoScrollHasMoreDataButton = false;
+              });
+            }
+          }
+        }
+      },
+    );
   }
 
   @override
@@ -54,258 +97,146 @@ class _HomeState extends State<Home> {
     // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
     scanAreaHeight = MediaQuery.of(context).size.height * 0.5;
     scanAreaWidth = scanAreaHeight;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isUserInfoScrollScrollable =
+          _scrollController.position.maxScrollExtent > 0;
+      _controlScroll();
+    });
+    print(
+        "BUILLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLDDDDDDDDDD----------------------------------------------");
+
+    /* if (_isUserInfoScrollScrollable) {
+      _scrollController.removeListener(_controlScroll);
+      _scrollController.addListener(_controlScroll);
+    } else {
+      _scrollController.removeListener(_controlScroll);
+    } */
     return Scaffold(
       body: Stack(
         children: <Widget>[
           // Dont put any widget on top of the QR Code scanner
           _buildQrView(context),
-          Row(
+          Column(
             children: [
               Expanded(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: SafeArea(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: SizedBox(
-                            width: double.maxFinite,
-                            // Container of details
-                            child: Row(
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Stack(
+                      children: [
+                        ListView(
+                          shrinkWrap: true,
+                          controller: _scrollController,
+                          physics: const BouncingScrollPhysics(),
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Expanded(
-                                  child: ListView(
-                                    physics: const BouncingScrollPhysics(),
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          // Detail Texts with different styles
-                                          RichText(
-                                            textAlign: TextAlign.center,
-                                            // Name title and other titles with values
-                                            text: TextSpan(
-                                              text:
-                                                  "${AppLocalizations.of(context)!.name}\n",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle1!
-                                                  .merge(
-                                                    const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: white,
-                                                    ),
-                                                  ),
-                                              children: [
-                                                // Name Value
-                                                TextSpan(
-                                                  text:
-                                                      "Yunus Ebubekir Abdul El sadddsdsfdsfdsfsdfsdfdsfsDFSDFHSJFHJKSFSDFSJKFJSDHHDSJSFJKDFJDFJSDFJDFFKJJFDJKFJKFJHDFJKDSFJSDFJam\n",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle1!
-                                                      .merge(
-                                                        const TextStyle(
-                                                          color: white,
-                                                        ),
-                                                      ),
-                                                ),
-                                                // Company Name Title
-                                                TextSpan(
-                                                  text:
-                                                      "${AppLocalizations.of(context)!.companyName}\n",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle1!
-                                                      .merge(
-                                                        const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: white,
-                                                        ),
-                                                      ),
-                                                ),
-                                                // Company Name Value
-                                                TextSpan(
-                                                  text:
-                                                      "Comitfy Bilişim Teknolojileri ve Yazılımı\n",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle1!
-                                                      .merge(
-                                                        const TextStyle(
-                                                          color: white,
-                                                        ),
-                                                      ),
-                                                ),
-                                                // TelNo Title
-                                                TextSpan(
-                                                  text:
-                                                      "${AppLocalizations.of(context)!.telNo}\n",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle1!
-                                                      .merge(
-                                                        const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: white,
-                                                        ),
-                                                      ),
-                                                ),
-                                                // TelNo Value
-                                                TextSpan(
-                                                  text:
-                                                      "(TR)+90542 103 20 65\n",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle1!
-                                                      .merge(
-                                                        const TextStyle(
-                                                          color: white,
-                                                        ),
-                                                      ),
-                                                ),
-                                                // TelNo Title
-                                                TextSpan(
-                                                  text:
-                                                      "${AppLocalizations.of(context)!.email}\n",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle1!
-                                                      .merge(
-                                                        const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: white,
-                                                        ),
-                                                      ),
-                                                ),
-                                                // TelNo Value
-                                                TextSpan(
-                                                  text:
-                                                      "ASDADASDASJKDJ@gmail.com\n",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle1!
-                                                      .merge(
-                                                        const TextStyle(
-                                                          color: white,
-                                                        ),
-                                                      ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                // Detail Texts with different styles
+                                buildQrCodeUserInfo(
+                                  context: context,
+                                  info: {
+                                    AppLocalizations.of(context)!.name:
+                                        "Yunus ıASJAn\n",
+                                    AppLocalizations.of(context)!.companyName:
+                                        "Comitfy\n",
+                                    AppLocalizations.of(context)!.telNo:
+                                        "+90(TR)542 103 20 65\n",
+                                    AppLocalizations.of(context)!.email:
+                                        "yunusyld7@gmail.com",
+                                  },
                                 ),
                               ],
                             ),
-                          ),
+                          ],
                         ),
-                      ),
-                    ),
-                    // We wont use expanded since the scan are can change
-                    SizedBox(
-                      width: scanAreaWidth,
-                      height: scanAreaHeight,
-                    ),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          if (_articleData != null)
-                            Text('Title: ${_articleData!['title']}')
-                          else
-                            Text(
-                              'Scan a code',
-                              style:
-                                  Theme.of(context).textTheme.bodyLarge!.merge(
-                                        TextStyle(color: white),
-                                      ),
+                        if (_isShowUserInfoScrollHasMoreDataButton)
+                          const Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Icon(
+                              Icons.arrow_downward,
+                              color: white,
                             ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                constraints: BoxConstraints(
-                                    maxWidth: 100, maxHeight: 100),
-                                margin: const EdgeInsets.all(8),
-                                child: Material(
-                                  shape: CircleBorder(),
-                                  clipBehavior: Clip.hardEdge,
-                                  color: _isFlashActive
-                                      ? whiteSecondary.withOpacity(0.5)
-                                      : Theme.of(context)
-                                          .buttonTheme
-                                          .colorScheme!
-                                          .background,
-                                  child: IconButton(
-                                    onPressed: () async {
-                                      _toggleFlash();
-                                    },
-                                    icon: _isFlashActive
-                                        ? const Icon(
-                                            Icons.flashlight_on,
-                                            color: blackSecondary,
-                                          )
-                                        : Icon(
-                                            Icons.flashlight_off,
-                                            color: Theme.of(context)
-                                                .buttonTheme
-                                                .colorScheme!
-                                                .surface,
-                                          ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.all(8),
-                                child: Material(
-                                  shape: CircleBorder(),
-                                  clipBehavior: Clip.hardEdge,
-                                  color: Theme.of(context)
-                                      .buttonTheme
-                                      .colorScheme!
-                                      .background,
-                                  child: IconButton(
-                                    onPressed: () async {
-                                      _toggleCameraPause();
-                                    },
-                                    icon: _isCameraPaused
-                                        ? Icon(
-                                            Icons.play_arrow,
-                                            color: Theme.of(context)
-                                                .buttonTheme
-                                                .colorScheme!
-                                                .surface,
-                                          )
-                                        : Icon(
-                                            Icons.pause,
-                                            color: Theme.of(context)
-                                                .buttonTheme
-                                                .colorScheme!
-                                                .surface,
-                                          ),
-                                  ),
-                                ),
-                              )
-                            ],
                           ),
-                        ],
-                      ),
-                    )
-                  ],
+                      ],
+                    ),
+                  ),
                 ),
               ),
+              // We wont use expanded since the scan are can change
+              SizedBox(
+                width: scanAreaWidth,
+                height: scanAreaHeight,
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    if (_articleData != null)
+                      Text('Title: ${_articleData!['title']}')
+                    else
+                      Text(
+                        'Scan a code',
+                        style: Theme.of(context).textTheme.bodyLarge!.merge(
+                              TextStyle(color: white),
+                            ),
+                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Material(
+                          shape: CircleBorder(),
+                          clipBehavior: Clip.hardEdge,
+                          color: _isFlashActive
+                              ? whiteSecondary.withOpacity(0.5)
+                              : Themes.darkTheme.buttonTheme.colorScheme!
+                                  .background,
+                          child: IconButton(
+                            onPressed: () async {
+                              _toggleFlash();
+                            },
+                            icon: _isFlashActive
+                                ? const Icon(
+                                    Icons.flashlight_on,
+                                    color: blackSecondary,
+                                  )
+                                : const Icon(
+                                    Icons.flashlight_off,
+                                    color: whiteSecondary,
+                                  ),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.all(8),
+                          child: Material(
+                            shape: CircleBorder(),
+                            clipBehavior: Clip.hardEdge,
+                            color: Themes
+                                .darkTheme.buttonTheme.colorScheme!.background,
+                            child: IconButton(
+                              onPressed: () async {
+                                _toggleCameraPause();
+                              },
+                              icon: _isCameraPaused
+                                  ? const Icon(
+                                      Icons.play_arrow,
+                                      color: whiteSecondary,
+                                    )
+                                  : Icon(
+                                      Icons.pause,
+                                      color: Themes.darkTheme.buttonTheme
+                                          .colorScheme!.surface,
+                                    ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ],
@@ -403,6 +334,7 @@ class _HomeState extends State<Home> {
   @override
   void dispose() {
     controller?.dispose();
+    _scrollController.removeListener(_controlScroll);
     super.dispose();
   }
 }

@@ -11,6 +11,7 @@
   "loading": "Deneniyor...",
   "name": "İsim/Soyisim: ",
   "companyName": "Firma: ",
-  "telNo": "TelNo: "
+  "telNo": "TelNo: ",
+  "canBeScrolled": "Aşağı kaydırılabilir"
 }
   
