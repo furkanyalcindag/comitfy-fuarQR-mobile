@@ -8,6 +8,13 @@ class Themes {
       visualDensity: VisualDensity.adaptivePlatformDensity,
       scaffoldBackgroundColor: white,
       iconTheme: const IconThemeData(color: black),
+      buttonTheme: ButtonThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: white,
+          background: primary,
+          surface: whiteSecondary,
+        ),
+      ),
       primaryColor: white,
       colorScheme: ColorScheme.fromSeed(
         primary: primary,
@@ -103,6 +110,13 @@ class Themes {
     ),
     scaffoldBackgroundColor: black,
     iconTheme: const IconThemeData(color: white),
+    buttonTheme: ButtonThemeData(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: black,
+        background: blackSecondary,
+        surface: primary,
+      ),
+    ),
     elevatedButtonTheme: const ElevatedButtonThemeData(
       style: ButtonStyle(
         backgroundColor: MaterialStatePropertyAll(blackSecondary),

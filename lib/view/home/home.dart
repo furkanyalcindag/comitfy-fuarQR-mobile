@@ -26,6 +26,11 @@ class _HomeState extends State<Home> {
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Color _scannerBorderColor = Colors.red;
+  bool _isCameraPaused = false;
+  bool _isFlashActive = false;
+  // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
+  var scanAreaHeight;
+  var scanAreaWidth;
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
@@ -40,125 +45,133 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
+    scanAreaHeight = MediaQuery.of(context).size.height * 0.5;
+    scanAreaWidth = scanAreaHeight;
     return Scaffold(
       body: Stack(
         children: <Widget>[
           // Dont put any widget on top of the QR Code scanner
           _buildQrView(context),
-          Positioned(
-            top: 0,
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: ThemeChoice()),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            width: MediaQuery.of(context).size.width,
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  if (_articleData != null)
-                    Text('Title: ${_articleData!['title']}')
-                  else
-                    Text(
-                      'Scan a code',
-                      style: Theme.of(context).textTheme.bodyLarge!.merge(
-                            TextStyle(color: white),
-                          ),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: ThemeChoice()),
+                      ),
                     ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.toggleFlash();
-                              setState(() {
-                                _scannerBorderColor = Colors.green;
-                              });
-                            },
-                            child: FutureBuilder(
-                              future: controller?.getFlashStatus(),
-                              builder: (context, snapshot) {
-                                return Text('Flash: ${snapshot.data}');
-                              },
-                            )),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.flipCamera();
-                              setState(() {});
-                            },
-                            child: FutureBuilder(
-                              future: controller?.getCameraInfo(),
-                              builder: (context, snapshot) {
-                                if (snapshot.data != null) {
-                                  return Text(
-                                      'Camera facing ${describeEnum(snapshot.data!)}');
-                                } else {
-                                  return const Text('loading');
-                                }
-                              },
-                            )),
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await controller?.pauseCamera();
-                          },
-                          child: const Text('pause',
-                              style: TextStyle(fontSize: 20)),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await controller?.resumeCamera();
-                          },
-                          child: const Text(
-                            'resume',
-                            style: TextStyle(fontSize: 20),
+                    Container(
+                      width: scanAreaWidth,
+                      height: scanAreaHeight,
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          if (_articleData != null)
+                            Text('Title: ${_articleData!['title']}')
+                          else
+                            Text(
+                              'Scan a code',
+                              style:
+                                  Theme.of(context).textTheme.bodyLarge!.merge(
+                                        TextStyle(color: white),
+                                      ),
+                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                constraints: BoxConstraints(
+                                    maxWidth: 100, maxHeight: 100),
+                                margin: const EdgeInsets.all(8),
+                                child: Material(
+                                  shape: CircleBorder(),
+                                  clipBehavior: Clip.hardEdge,
+                                  color: _isFlashActive
+                                      ? whiteSecondary.withOpacity(0.5)
+                                      : Theme.of(context)
+                                          .buttonTheme
+                                          .colorScheme!
+                                          .background,
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      _toggleFlash();
+                                    },
+                                    icon: _isFlashActive
+                                        ? const Icon(
+                                            Icons.flashlight_on,
+                                            color: blackSecondary,
+                                          )
+                                        : Icon(
+                                            Icons.flashlight_off,
+                                            color: Theme.of(context)
+                                                .buttonTheme
+                                                .colorScheme!
+                                                .surface,
+                                          ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.all(8),
+                                child: Material(
+                                  shape: CircleBorder(),
+                                  clipBehavior: Clip.hardEdge,
+                                  color: Theme.of(context)
+                                      .buttonTheme
+                                      .colorScheme!
+                                      .background,
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      _toggleCameraPause();
+                                    },
+                                    icon: _isCameraPaused
+                                        ? Icon(
+                                            Icons.play_arrow,
+                                            color: Theme.of(context)
+                                                .buttonTheme
+                                                .colorScheme!
+                                                .surface,
+                                          )
+                                        : Icon(
+                                            Icons.pause,
+                                            color: Theme.of(context)
+                                                .buttonTheme
+                                                .colorScheme!
+                                                .surface,
+                                          ),
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
-                        ),
-                      )
-                    ],
-                  ),
-                ],
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-          )
+            ],
+          ),
         ],
       ),
     );
   }
 
   Widget _buildQrView(BuildContext context) {
-    // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
-    var scanAreaHeight = MediaQuery.of(context).size.height * 0.5;
-    var scanAreaWidth = scanAreaHeight;
-
-    Fluttertoast.showToast(
+    /* Fluttertoast.showToast(
       msg: "Camera initialized",
       gravity: ToastGravity.BOTTOM,
       toastLength: Toast.LENGTH_SHORT,
-    );
+    ); */
     // To ensure the Scanner view is properly sizes after rotation
     // we need to listen for Flutter SizeChanged notification and update controller
     return QRView(
@@ -211,6 +224,33 @@ class _HomeState extends State<Home> {
         _articleData = data;
       });
     }
+  }
+
+  Future<void> _toggleCameraPause() async {
+    if (_isCameraPaused) {
+      await controller?.resumeCamera();
+      setState(() {
+        _isCameraPaused = false;
+      });
+      return;
+    }
+    await controller?.pauseCamera();
+    setState(() {
+      _isCameraPaused = true;
+    });
+  }
+
+  Future<void> _toggleFlash() async {
+    if (_isFlashActive) {
+      setState(() {
+        _isFlashActive = false;
+      });
+    } else {
+      setState(() {
+        _isFlashActive = true;
+      });
+    }
+    await controller?.toggleFlash();
   }
 
   @override
