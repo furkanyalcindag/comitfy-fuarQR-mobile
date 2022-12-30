@@ -22,7 +22,7 @@ Widget buildTextField({
         Material(
           elevation: 20,
           color: Colors.transparent,
-          shadowColor: Colors.black.withOpacity(0.3),
+          shadowColor: Colors.black.withOpacity(0.2),
           child: TextFormField(
             obscureText: isPassword ? !showPassword : false,
             enableSuggestions: isPassword ? false : true,
@@ -32,7 +32,10 @@ Widget buildTextField({
             controller: controller,
             style: Theme.of(context).textTheme.subtitle1!,
             decoration: InputDecoration(
-              border: InputBorder.none,
+              border: UnderlineInputBorder(
+                borderSide: BorderSide(),
+                borderRadius: BorderRadius.circular(100),
+              ),
               hintText: hintText,
               filled: true,
               fillColor: Theme.of(context).primaryColor,
@@ -43,7 +46,7 @@ Widget buildTextField({
                 child: Icon(Icons.usb_rounded),
               ),
               suffixIcon: suffixIcon,
-              enabledBorder: OutlineInputBorder(
+              /* enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide.none,
                 borderRadius: BorderRadius.circular(100),
               ),
@@ -62,7 +65,7 @@ Widget buildTextField({
               focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide.none,
                 borderRadius: BorderRadius.circular(100),
-              ),
+              ), */
             ),
           ),
         ),

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 
 class ArticleService {
-  static Future<Map<String, dynamic>> fetchArticleByID(
+  static Future<Map<String, dynamic>?> fetchArticleByID(
       {required String path, required String uuid}) async {
     // late List<Article> list;
     print(path);
@@ -21,7 +21,7 @@ class ArticleService {
       data = json.decode(utf8.decode(response.bodyBytes));
       return data;
     } else {
-      throw Exception(response.statusCode);
+      return null;
     }
   }
 }

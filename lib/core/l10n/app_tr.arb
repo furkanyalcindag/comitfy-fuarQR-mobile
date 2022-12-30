@@ -12,6 +12,8 @@
   "name": "İsim/Soyisim: ",
   "companyName": "Firma: ",
   "telNo": "TelNo: ",
-  "canBeScrolled": "Aşağı kaydırılabilir"
+  "canBeScrolled": "Aşağı kaydırılabilir",
+  "errorDataNotCorrect": "Data not correct",
+  "noPermission": "Lütfen kamera iznini uygulama ayarından veriniz"
 }
   

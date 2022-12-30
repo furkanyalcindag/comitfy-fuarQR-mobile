@@ -34,6 +34,7 @@ class _HomeState extends State<Home> {
   var scanAreaWidth;
   Barcode? result;
   Map<String, dynamic>? _articleData;
+  String? _errorMessage;
 
   // Controllers
   late ScrollController _scrollController;
@@ -42,7 +43,8 @@ class _HomeState extends State<Home> {
 
   // View control
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  Color _scannerBorderColor = Colors.red;
+  Color _scannerBorderColor = primary;
+  Color _scannerOverlayColor = const Color.fromRGBO(0, 0, 0, 80);
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
@@ -132,20 +134,24 @@ class _HomeState extends State<Home> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                // Detail Texts with different styles
-                                buildQrCodeUserInfo(
-                                  context: context,
-                                  info: {
-                                    AppLocalizations.of(context)!.name:
-                                        "Yunus ıASJAn\n",
-                                    AppLocalizations.of(context)!.companyName:
-                                        "Comitfy\n",
-                                    AppLocalizations.of(context)!.telNo:
-                                        "+90(TR)542 103 20 65\n",
-                                    AppLocalizations.of(context)!.email:
-                                        "yunusyld7@gmail.com",
-                                  },
-                                ),
+                                // User Detail Texts -------------------IMPORTANT
+                                if (_articleData != null) ...[
+                                  if (_errorMessage == null) ...[
+                                    buildQrCodeUserInfo(
+                                      context: context,
+                                      info: {
+                                        AppLocalizations.of(context)!.name:
+                                            "${_articleData!['title']}\n",
+                                        AppLocalizations.of(context)!
+                                            .companyName: "Comitfy\n",
+                                        AppLocalizations.of(context)!.telNo:
+                                            "+90(TR)542 103 20 65\n",
+                                        AppLocalizations.of(context)!.email:
+                                            "yunusyld7@gmail.com",
+                                      },
+                                    ),
+                                  ],
+                                ],
                               ],
                             ),
                           ],
@@ -174,38 +180,47 @@ class _HomeState extends State<Home> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     if (_articleData != null)
-                      Text('Title: ${_articleData!['title']}')
-                    else
+                      // Is it Accepted Or NOT -------------------------IMPORTANT
                       Text(
-                        'Scan a code',
+                        'Title: ${_articleData!['likeCount'] > 0}',
                         style: Theme.of(context).textTheme.bodyLarge!.merge(
                               TextStyle(color: white),
+                            ),
+                      )
+                    else if (_errorMessage != null)
+                      Text(
+                        _errorMessage ?? '',
+                        style: Theme.of(context).textTheme.bodyLarge!.merge(
+                              const TextStyle(color: errorColor),
                             ),
                       ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Material(
-                          shape: CircleBorder(),
-                          clipBehavior: Clip.hardEdge,
-                          color: _isFlashActive
-                              ? whiteSecondary.withOpacity(0.5)
-                              : Themes.darkTheme.buttonTheme.colorScheme!
-                                  .background,
-                          child: IconButton(
-                            onPressed: () async {
-                              _toggleFlash();
-                            },
-                            icon: _isFlashActive
-                                ? const Icon(
-                                    Icons.flashlight_on,
-                                    color: blackSecondary,
-                                  )
-                                : const Icon(
-                                    Icons.flashlight_off,
-                                    color: whiteSecondary,
-                                  ),
+                        Container(
+                          margin: const EdgeInsets.all(8),
+                          child: Material(
+                            shape: CircleBorder(),
+                            clipBehavior: Clip.hardEdge,
+                            color: _isFlashActive
+                                ? whiteSecondary.withOpacity(0.5)
+                                : Themes.darkTheme.buttonTheme.colorScheme!
+                                    .background,
+                            child: IconButton(
+                              onPressed: () async {
+                                _toggleFlash();
+                              },
+                              icon: _isFlashActive
+                                  ? const Icon(
+                                      Icons.flashlight_on,
+                                      color: blackSecondary,
+                                    )
+                                  : const Icon(
+                                      Icons.flashlight_off,
+                                      color: whiteSecondary,
+                                    ),
+                            ),
                           ),
                         ),
                         Container(
@@ -231,7 +246,29 @@ class _HomeState extends State<Home> {
                                     ),
                             ),
                           ),
-                        )
+                        ),
+                        // Clear scan
+                        if (_articleData != null || _errorMessage != null)
+                          Container(
+                            margin: const EdgeInsets.all(8),
+                            child: Material(
+                              shape: CircleBorder(),
+                              clipBehavior: Clip.hardEdge,
+                              color: _isFlashActive
+                                  ? whiteSecondary.withOpacity(0.5)
+                                  : Themes.darkTheme.buttonTheme.colorScheme!
+                                      .background,
+                              child: IconButton(
+                                  onPressed: () async {
+                                    _clearScan();
+                                  },
+                                  icon: Icon(
+                                    Icons.task_alt_outlined,
+                                    color: Themes.darkTheme.buttonTheme
+                                        .colorScheme!.surface,
+                                  )),
+                            ),
+                          ),
                       ],
                     ),
                   ],
@@ -257,6 +294,7 @@ class _HomeState extends State<Home> {
       onQRViewCreated: _onQRViewCreated,
       overlay: QrScannerOverlayShape(
         borderColor: _scannerBorderColor,
+        overlayColor: _scannerOverlayColor,
         borderRadius: 10,
         borderLength: 30,
         borderWidth: 10,
@@ -285,22 +323,35 @@ class _HomeState extends State<Home> {
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
     log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
     if (!p) {
-      print("NO PERMISSION");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('no Permission')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.noPermission)),
       );
     }
   }
 
   Future<void> _getArticleTitle({required String? uuid}) async {
+    print("IT TAKESSS");
     if (uuid != null && uuid.isNotEmpty) {
       var data = await ArticleService.fetchArticleByID(
         path: "http://89.252.140.57:8080/article/",
         uuid: uuid,
       );
-      setState(() {
-        _articleData = data;
-      });
+
+      if (data == null) {
+        setState(() {
+          _articleData = data;
+          _errorMessage = AppLocalizations.of(context)!.errorDataNotCorrect;
+          _scannerBorderColor = Colors.red;
+          _scannerOverlayColor = const Color.fromRGBO(255, 0, 0, 0.5);
+        });
+      } else {
+        setState(() {
+          _articleData = data;
+          _errorMessage = null;
+          _scannerBorderColor = Colors.green;
+          _scannerOverlayColor = const Color.fromRGBO(0, 255, 0, 0.5);
+        });
+      }
     }
   }
 
@@ -329,6 +380,16 @@ class _HomeState extends State<Home> {
       });
     }
     await controller?.toggleFlash();
+  }
+
+  Future<void> _clearScan() async {
+    setState(() {
+      result = null;
+      _errorMessage = null;
+      _articleData = null;
+      _scannerBorderColor = primary;
+      _scannerOverlayColor = const Color.fromRGBO(0, 0, 0, 80);
+    });
   }
 
   @override

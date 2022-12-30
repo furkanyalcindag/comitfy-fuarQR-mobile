@@ -12,5 +12,7 @@
   "name": "Name/Surname: ",
   "companyName": "Company: ",
   "telNo": "TelNo: ",
-  "canBeScrolled": "Can be scrolled"
+  "canBeScrolled": "Can be scrolled",
+  "errorDataNotCorrect": "Doğru veri değil",
+  "noPermission": "Please allow camera from app settings"
 }

@@ -167,7 +167,7 @@ class _LoginPageState extends State<LoginPage> with CacheManager {
                           if (value!.isEmpty == true) {
                             return AppLocalizations.of(context)!.errorPassEmpty;
                           }
-                          if (value.length < 6) {
+                          if (value.length < 8) {
                             return AppLocalizations.of(context)!
                                 .errorPassLength;
                           }
@@ -194,6 +194,7 @@ class _LoginPageState extends State<LoginPage> with CacheManager {
                                     Text(AppLocalizations.of(context)!.loading),
                               ),
                             ),
+                      ThemeChoice(),
                     ],
                   ),
                 ),

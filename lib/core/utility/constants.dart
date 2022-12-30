@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fuar_qr/core/utility/themes.dart';
 
 const Color primary = Color(0xFF76a7f4);
+const Color errorColor = Colors.red;
 //Color(0xFF79d3be);Color(0xFF76a7f4);
 const Color lightBlack = Color(0xFFAEAEAD);
 
