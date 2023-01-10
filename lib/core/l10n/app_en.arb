@@ -14,5 +14,6 @@
   "telNo": "TelNo: ",
   "canBeScrolled": "Can be scrolled",
   "errorDataNotCorrect": "Doğru veri değil",
-  "noPermission": "Please allow camera from app settings"
+  "noPermission": "Please allow camera from app settings",
+  "noController": "Controller cant be reached"
 }

@@ -14,6 +14,7 @@
   "telNo": "TelNo: ",
   "canBeScrolled": "Aşağı kaydırılabilir",
   "errorDataNotCorrect": "Data not correct",
-  "noPermission": "Lütfen kamera iznini uygulama ayarından veriniz"
+  "noPermission": "Lütfen kamera iznini uygulama ayarından veriniz",
+  "noController": "Denetleyiciye ulaşılamıyor"
 }
   

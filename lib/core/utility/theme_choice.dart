@@ -43,7 +43,6 @@ class ThemeChoiceState extends State<ThemeChoice> {
           title: Text("Açık"),
           onChanged: (mode) {
             _setSelectedThemeMode(mode!, themeModeNotifier);
-            print("WROKS");
           },
           selected: _selectedThemeMode == ThemeMode.light,
           activeColor: primary,
@@ -73,7 +72,6 @@ class ThemeChoiceState extends State<ThemeChoice> {
     var prefs = await SharedPreferences.getInstance();
     prefs.setInt('themeMode', mode.index);
     setState(() {
-      print("RWRRJKLRJKJLRKLJRKJLRKJLRLKJR");
       _selectedThemeMode = mode;
     });
   }

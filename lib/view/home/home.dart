@@ -14,6 +14,7 @@ import 'package:fuar_qr/core/utility/constants.dart';
 import 'package:fuar_qr/core/utility/theme_choice.dart';
 import 'package:fuar_qr/core/utility/themes.dart';
 import 'package:fuar_qr/view/componentbuilders/qrscanner_user_information_builder.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -26,7 +27,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   // Data
-  bool _isCameraPaused = false;
+  bool _isCameraPaused = true;
   bool _isFlashActive = false;
   bool _isUserInfoScrollScrollable = false;
   bool _isShowUserInfoScrollHasMoreDataButton = false;
@@ -60,7 +61,24 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _requestCameraPermission();
+    });
     _scrollController = ScrollController()..addListener(_controlScroll);
+  }
+
+  /// Request the files permission and updates the UI accordingly
+  Future<void> _requestCameraPermission() async {
+    PermissionStatus result;
+
+    // We need to check the platform before requesting
+    result = await Permission.camera.request();
+
+    if (result.isDenied || result.isPermanentlyDenied || result.isRestricted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.noPermission)),
+      );
+    }
   }
 
   Future<void> _controlScroll() async {
@@ -104,8 +122,6 @@ class _HomeState extends State<Home> {
           _scrollController.position.maxScrollExtent > 0;
       _controlScroll();
     });
-    print(
-        "BUILLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLDDDDDDDDDD----------------------------------------------");
 
     /* if (_isUserInfoScrollScrollable) {
       _scrollController.removeListener(_controlScroll);
@@ -301,7 +317,6 @@ class _HomeState extends State<Home> {
         cutOutWidth: scanAreaWidth,
         cutOutHeight: scanAreaHeight,
       ),
-      onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
     );
   }
 
@@ -309,7 +324,7 @@ class _HomeState extends State<Home> {
     setState(() {
       this.controller = controller;
     });
-    controller.pauseCamera();
+    _toggleCameraPause();
     controller.scannedDataStream.listen((scanData) async {
       if (result?.code != scanData.code) {
         _getArticleTitle(uuid: scanData.code);
@@ -318,15 +333,6 @@ class _HomeState extends State<Home> {
         });
       }
     });
-  }
-
-  void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
-    log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
-    if (!p) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.noPermission)),
-      );
-    }
   }
 
   Future<void> _getArticleTitle({required String? uuid}) async {
@@ -357,28 +363,36 @@ class _HomeState extends State<Home> {
 
   Future<void> _toggleCameraPause() async {
     if (_isCameraPaused) {
-      await controller?.resumeCamera();
       setState(() {
         _isCameraPaused = false;
       });
+      await controller?.resumeCamera();
       return;
     }
-    await controller?.pauseCamera();
     setState(() {
       _isCameraPaused = true;
     });
+    await controller?.pauseCamera();
   }
 
   Future<void> _toggleFlash() async {
-    if (_isFlashActive) {
-      setState(() {
-        _isFlashActive = false;
-      });
+    bool? _currentFlashStatus = await controller?.getFlashStatus();
+    if (_currentFlashStatus != null) {
+      if (_currentFlashStatus == true) {
+        setState(() {
+          _isFlashActive = true;
+        });
+      } else {
+        setState(() {
+          _isFlashActive = false;
+        });
+      }
     } else {
-      setState(() {
-        _isFlashActive = true;
-      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.noController)),
+      );
     }
+
     await controller?.toggleFlash();
   }
 

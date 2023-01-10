@@ -6,8 +6,6 @@ class ArticleService {
   static Future<Map<String, dynamic>?> fetchArticleByID(
       {required String path, required String uuid}) async {
     // late List<Article> list;
-    print(path);
-    print(uuid);
 
     final response = await get(
       Uri.parse(path + uuid),

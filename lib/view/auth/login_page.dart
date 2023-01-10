@@ -194,7 +194,6 @@ class _LoginPageState extends State<LoginPage> with CacheManager {
                                     Text(AppLocalizations.of(context)!.loading),
                               ),
                             ),
-                      ThemeChoice(),
                     ],
                   ),
                 ),
