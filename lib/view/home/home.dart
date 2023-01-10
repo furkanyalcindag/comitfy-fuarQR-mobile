@@ -9,7 +9,9 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:fuar_qr/core/services/article/article_manager.dart';
+import 'package:fuar_qr/core/config/app_config.dart';
+import 'package:fuar_qr/core/services/participant/models/participant_validate_model.dart';
+import 'package:fuar_qr/core/services/participant/participant_manager.dart';
 import 'package:fuar_qr/core/utility/constants.dart';
 import 'package:fuar_qr/core/utility/theme_choice.dart';
 import 'package:fuar_qr/core/utility/themes.dart';
@@ -34,8 +36,10 @@ class _HomeState extends State<Home> {
   var scanAreaHeight;
   var scanAreaWidth;
   Barcode? result;
-  Map<String, dynamic>? _articleData;
+  ParticipantValidateModel? _validatedParticipantData;
   String? _errorMessage;
+  late final _participantValidateURL = AppConfig.of(context)!.baseURL +
+      AppConfig.of(context)!.participantValidatePath;
 
   // Controllers
   late ScrollController _scrollController;
@@ -151,19 +155,19 @@ class _HomeState extends State<Home> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 // User Detail Texts -------------------IMPORTANT
-                                if (_articleData != null) ...[
+                                if (_validatedParticipantData != null) ...[
                                   if (_errorMessage == null) ...[
                                     buildQrCodeUserInfo(
                                       context: context,
                                       info: {
                                         AppLocalizations.of(context)!.name:
-                                            "${_articleData!['title']}\n",
+                                            "${_validatedParticipantData!.fairParticipantDTO!.firstName} | ${_validatedParticipantData!.fairParticipantDTO!.lastName}\n",
                                         AppLocalizations.of(context)!
-                                            .companyName: "Comitfy\n",
+                                            .companyName: "${_validatedParticipantData!.fairParticipantDTO!.companyName}\n",
                                         AppLocalizations.of(context)!.telNo:
-                                            "+90(TR)542 103 20 65\n",
+                                            "${_validatedParticipantData!.fairParticipantDTO!.mobilePhone}\n",
                                         AppLocalizations.of(context)!.email:
-                                            "yunusyld7@gmail.com",
+                                            "${_validatedParticipantData!.fairParticipantDTO!.email}",
                                       },
                                     ),
                                   ],
@@ -195,12 +199,12 @@ class _HomeState extends State<Home> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    if (_articleData != null)
+                    if (_validatedParticipantData != null)
                       // Is it Accepted Or NOT -------------------------IMPORTANT
                       Text(
-                        'Title: ${_articleData!['likeCount'] > 0}',
+                        '${_validatedParticipantData!.valid}',
                         style: Theme.of(context).textTheme.bodyLarge!.merge(
-                              TextStyle(color: white),
+                              const TextStyle(color: white),
                             ),
                       )
                     else if (_errorMessage != null)
@@ -217,7 +221,7 @@ class _HomeState extends State<Home> {
                         Container(
                           margin: const EdgeInsets.all(8),
                           child: Material(
-                            shape: CircleBorder(),
+                            shape: const CircleBorder(),
                             clipBehavior: Clip.hardEdge,
                             color: _isFlashActive
                                 ? whiteSecondary.withOpacity(0.5)
@@ -242,7 +246,7 @@ class _HomeState extends State<Home> {
                         Container(
                           margin: const EdgeInsets.all(8),
                           child: Material(
-                            shape: CircleBorder(),
+                            shape: const CircleBorder(),
                             clipBehavior: Clip.hardEdge,
                             color: Themes
                                 .darkTheme.buttonTheme.colorScheme!.background,
@@ -264,11 +268,12 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                         // Clear scan
-                        if (_articleData != null || _errorMessage != null)
+                        if (_validatedParticipantData != null ||
+                            _errorMessage != null)
                           Container(
                             margin: const EdgeInsets.all(8),
                             child: Material(
-                              shape: CircleBorder(),
+                              shape: const CircleBorder(),
                               clipBehavior: Clip.hardEdge,
                               color: _isFlashActive
                                   ? whiteSecondary.withOpacity(0.5)
@@ -327,7 +332,7 @@ class _HomeState extends State<Home> {
     _toggleCameraPause();
     controller.scannedDataStream.listen((scanData) async {
       if (result?.code != scanData.code) {
-        _getArticleTitle(uuid: scanData.code);
+        _validateParticipant(uuid: scanData.code);
         setState(() {
           result = scanData;
         });
@@ -335,24 +340,24 @@ class _HomeState extends State<Home> {
     });
   }
 
-  Future<void> _getArticleTitle({required String? uuid}) async {
-    print("IT TAKESSS");
+  Future<void> _validateParticipant({required String? uuid}) async {
+    log("It took uuid now trying to validate...");
     if (uuid != null && uuid.isNotEmpty) {
-      var data = await ArticleService.fetchArticleByID(
-        path: "http://89.252.140.57:8080/article/",
+      var data = await ParticipantService.fetchValidateParticipantByID(
+        path: _participantValidateURL,
         uuid: uuid,
       );
 
       if (data == null) {
         setState(() {
-          _articleData = data;
+          _validatedParticipantData = data;
           _errorMessage = AppLocalizations.of(context)!.errorDataNotCorrect;
           _scannerBorderColor = Colors.red;
           _scannerOverlayColor = const Color.fromRGBO(255, 0, 0, 0.5);
         });
       } else {
         setState(() {
-          _articleData = data;
+          _validatedParticipantData = data;
           _errorMessage = null;
           _scannerBorderColor = Colors.green;
           _scannerOverlayColor = const Color.fromRGBO(0, 255, 0, 0.5);
@@ -400,7 +405,7 @@ class _HomeState extends State<Home> {
     setState(() {
       result = null;
       _errorMessage = null;
-      _articleData = null;
+      _validatedParticipantData = null;
       _scannerBorderColor = primary;
       _scannerOverlayColor = const Color.fromRGBO(0, 0, 0, 80);
     });

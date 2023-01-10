@@ -1,15 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fuar_qr/core/services/authentication/models/user_response_model.dart';
 import 'package:fuar_qr/core/services/exception/models/exception_model.dart';
 import 'package:fuar_qr/core/utility/cache_manager.dart';
-import 'package:fuar_qr/core/utility/constants.dart';
-import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginService extends CacheManager {
   Future<UserResponseModel?> fetchLogin(

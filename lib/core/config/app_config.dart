@@ -8,6 +8,7 @@ class AppConfig extends InheritedWidget {
     required this.appInternalId,
     required this.baseURL,
     required this.loginPath,
+    required this.participantValidatePath,
     required Widget child,
   }) : super(key: key, child: child);
 
@@ -15,6 +16,7 @@ class AppConfig extends InheritedWidget {
   final int appInternalId;
   final String baseURL;
   final String loginPath;
+  final String participantValidatePath;
 
   static AppConfig? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<AppConfig>();

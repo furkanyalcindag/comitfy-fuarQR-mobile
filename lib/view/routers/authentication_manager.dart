@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fuar_qr/core/services/user/models/user.dart';
+import 'package:fuar_qr/core/services/participant/models/participant_model.dart';
 import 'package:fuar_qr/core/utility/cache_manager.dart';
 
 class AuthenticationManager extends CacheManager {
@@ -12,7 +12,7 @@ class AuthenticationManager extends CacheManager {
   }
 
   bool isLogin = false;
-  User? model;
+  ParticipantModel? model;
 
   void removeAllData() {}
 

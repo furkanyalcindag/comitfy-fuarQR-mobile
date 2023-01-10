@@ -16,11 +16,11 @@ class UserResponseModel {
   }
 
   Map<String, dynamic> toJson() {
-    final data = Map<String, dynamic>();
-    data['jwt-token'] = this.token;
-    data['roles'] = this.roles;
-    data['gender'] = this.gender;
-    data['exception'] = this.exception;
+    final data = <String, dynamic>{};
+    data['jwt-token'] = token;
+    data['roles'] = roles;
+    data['gender'] = gender;
+    data['exception'] = exception;
     return data;
   }
 }
