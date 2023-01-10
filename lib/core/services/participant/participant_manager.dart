@@ -23,7 +23,10 @@ class ParticipantService {
     var responseJson = json.decode(utf8.decode(response.bodyBytes));
 
     if (response.statusCode == 200) {
-      return responseJson ? ParticipantValidateModel.fromJson(responseJson) : null;
+      if(responseJson != null){
+        return ParticipantValidateModel.fromJson(responseJson);
+      }
+      return null;
     } else {
       return null;
     }

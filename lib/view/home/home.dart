@@ -161,13 +161,14 @@ class _HomeState extends State<Home> {
                                       context: context,
                                       info: {
                                         AppLocalizations.of(context)!.name:
-                                            "${_validatedParticipantData!.fairParticipantDTO!.firstName} | ${_validatedParticipantData!.fairParticipantDTO!.lastName}\n",
+                                            "${_validatedParticipantData?.fairParticipantDTO?.firstName} | ${_validatedParticipantData?.fairParticipantDTO?.lastName}\n",
                                         AppLocalizations.of(context)!
-                                            .companyName: "${_validatedParticipantData!.fairParticipantDTO!.companyName}\n",
+                                                .companyName:
+                                            "${_validatedParticipantData?.fairParticipantDTO?.companyName}\n",
                                         AppLocalizations.of(context)!.telNo:
-                                            "${_validatedParticipantData!.fairParticipantDTO!.mobilePhone}\n",
+                                            "${_validatedParticipantData?.fairParticipantDTO?.mobilePhone}\n",
                                         AppLocalizations.of(context)!.email:
-                                            "${_validatedParticipantData!.fairParticipantDTO!.email}",
+                                            "${_validatedParticipantData?.fairParticipantDTO?.email}",
                                       },
                                     ),
                                   ],
@@ -202,7 +203,7 @@ class _HomeState extends State<Home> {
                     if (_validatedParticipantData != null)
                       // Is it Accepted Or NOT -------------------------IMPORTANT
                       Text(
-                        '${_validatedParticipantData!.valid}',
+                        '${_validatedParticipantData?.valid}',
                         style: Theme.of(context).textTheme.bodyLarge!.merge(
                               const TextStyle(color: white),
                             ),
@@ -346,6 +347,11 @@ class _HomeState extends State<Home> {
       var data = await ParticipantService.fetchValidateParticipantByID(
         path: _participantValidateURL,
         uuid: uuid,
+      );
+      Fluttertoast.showToast(
+        msg: "Took data: ${data!.valid}",
+        gravity: ToastGravity.BOTTOM,
+        toastLength: Toast.LENGTH_SHORT,
       );
 
       if (data == null) {
