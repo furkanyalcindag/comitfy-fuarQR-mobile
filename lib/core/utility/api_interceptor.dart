@@ -18,12 +18,12 @@ class ApiInterceptor implements InterceptorContract {
     print(token);
 
     try {
-      data.headers['accept-header'] = 'application/json';
-      data.headers['content-type'] = 'application/json';
+      //data.headers['accept-header'] = 'application/json';
+      //data.headers['content-type'] = 'application/json';
       data.headers['authorization'] = 'Bearer $token';
       // New locales can be added with if else statement.
       // data.headers['accept-language'] = "TR";
-      data.headers[HttpHeaders.contentTypeHeader] = "application/json";
+      //data.headers[HttpHeaders.contentTypeHeader] = "application/json";
     } catch (e) {
       print(e);
     }

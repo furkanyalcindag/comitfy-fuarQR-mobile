@@ -11,7 +11,9 @@ class ParticipantValidateModel {
 
   factory ParticipantValidateModel.fromJson(Map<String, dynamic> json) {
     return ParticipantValidateModel(
-      fairParticipantDTO: json["fairParticipantDTO"],
+      fairParticipantDTO: json["fairParticipantDTO"] != null
+          ? ParticipantModel.fromJson(json["fairParticipantDTO"])
+          : null,
       valid: json["valid"] ?? false,
     );
   }
@@ -20,7 +22,7 @@ class ParticipantValidateModel {
     final data = <String, dynamic>{};
     data['fairParticipantDTO'] = fairParticipantDTO;
     data['valid'] = valid;
-    
+
     return data;
   }
 }

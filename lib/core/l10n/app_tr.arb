@@ -4,6 +4,7 @@
   "email": "Email",
   "password": "Şifre",
   "success": "Başarılı",
+  "participantAllowed": "Geçerli katılımcı",
   "errorEmailEmpty": "Email boş olmamalı",
   "errorPassEmpty": "Şifre boş olmamalı",
   "errorPassLength": "Şifre en az 8 karakter olmalı",
@@ -13,8 +14,9 @@
   "companyName": "Firma: ",
   "telNo": "TelNo: ",
   "canBeScrolled": "Aşağı kaydırılabilir",
-  "errorDataNotCorrect": "Data not correct",
-  "noPermission": "Lütfen kamera iznini uygulama ayarından veriniz",
-  "noController": "Denetleyiciye ulaşılamıyor"
+  "errorDataNotCorrect": "Veri doğru değil",
+  "errorParticipantNotAllowed": "Geçersiz katılımcı",
+  "errorNoPermission": "Lütfen kamera iznini uygulama ayarından veriniz",
+  "errorNoController": "Denetleyiciye ulaşılamıyor"
 }
   

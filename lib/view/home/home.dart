@@ -80,7 +80,8 @@ class _HomeState extends State<Home> {
 
     if (result.isDenied || result.isPermanentlyDenied || result.isRestricted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.noPermission)),
+        SnackBar(
+            content: Text(AppLocalizations.of(context)!.errorNoPermission)),
       );
     }
   }
@@ -203,9 +204,17 @@ class _HomeState extends State<Home> {
                     if (_validatedParticipantData != null)
                       // Is it Accepted Or NOT -------------------------IMPORTANT
                       Text(
-                        '${_validatedParticipantData?.valid}',
+                        _validatedParticipantData?.valid != null &&
+                                _validatedParticipantData?.valid == true
+                            ? AppLocalizations.of(context)!.participantAllowed
+                            : AppLocalizations.of(context)!
+                                .errorParticipantNotAllowed,
                         style: Theme.of(context).textTheme.bodyLarge!.merge(
-                              const TextStyle(color: white),
+                              TextStyle(
+                                  color:
+                                      _validatedParticipantData?.valid == true
+                                          ? successColor
+                                          : errorColor),
                             ),
                       )
                     else if (_errorMessage != null)
@@ -348,11 +357,6 @@ class _HomeState extends State<Home> {
         path: _participantValidateURL,
         uuid: uuid,
       );
-      Fluttertoast.showToast(
-        msg: "Took data: ${data!.valid}",
-        gravity: ToastGravity.BOTTOM,
-        toastLength: Toast.LENGTH_SHORT,
-      );
 
       if (data == null) {
         setState(() {
@@ -362,12 +366,23 @@ class _HomeState extends State<Home> {
           _scannerOverlayColor = const Color.fromRGBO(255, 0, 0, 0.5);
         });
       } else {
-        setState(() {
-          _validatedParticipantData = data;
-          _errorMessage = null;
-          _scannerBorderColor = Colors.green;
-          _scannerOverlayColor = const Color.fromRGBO(0, 255, 0, 0.5);
-        });
+        if (data.valid != false) {
+          setState(() {
+            _validatedParticipantData = data;
+            _errorMessage = null;
+            _scannerBorderColor = Colors.green;
+            _scannerOverlayColor = const Color.fromRGBO(0, 255, 0, 0.5);
+          });
+          return;
+        } else {
+          setState(() {
+            _validatedParticipantData = data;
+            _errorMessage =
+                AppLocalizations.of(context)!.errorParticipantNotAllowed;
+            _scannerBorderColor = Colors.red;
+            _scannerOverlayColor = const Color.fromRGBO(255, 0, 0, 0.5);
+          });
+        }
       }
     }
   }
@@ -387,20 +402,21 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> _toggleFlash() async {
-    bool? _currentFlashStatus = await controller?.getFlashStatus();
-    if (_currentFlashStatus != null) {
-      if (_currentFlashStatus == true) {
+    bool? currentFlashStatus = await controller?.getFlashStatus();
+    if (currentFlashStatus != null) {
+      if (currentFlashStatus == true) {
         setState(() {
-          _isFlashActive = true;
+          _isFlashActive = false;
         });
       } else {
         setState(() {
-          _isFlashActive = false;
+          _isFlashActive = true;
         });
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.noController)),
+        SnackBar(
+            content: Text(AppLocalizations.of(context)!.errorNoController)),
       );
     }
 

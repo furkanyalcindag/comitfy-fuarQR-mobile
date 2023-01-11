@@ -4,6 +4,7 @@
   "email": "Email",
   "password": "Password",
   "success": "Success",
+  "participantAllowed": "Valid participant",
   "errorEmailEmpty":  "Email cannot be empty",
   "errorPassEmpty": "Password cannot be empty",
   "errorPassLength": "Password length must be 8 or greater",
@@ -13,7 +14,8 @@
   "companyName": "Company: ",
   "telNo": "TelNo: ",
   "canBeScrolled": "Can be scrolled",
-  "errorDataNotCorrect": "Doğru veri değil",
-  "noPermission": "Please allow camera from app settings",
-  "noController": "Controller cant be reached"
+  "errorDataNotCorrect": "Data not correct",
+  "errorParticipantNotAllowed": "Invalid participant",
+  "errorNoPermission": "Please allow camera from app settings",
+  "errorNoController": "Controller cant be reached"
 }

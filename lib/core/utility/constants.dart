@@ -3,6 +3,8 @@ import 'package:fuar_qr/core/utility/themes.dart';
 
 const Color primary = Color(0xFF76a7f4);
 const Color errorColor = Colors.red;
+const Color successColor = Color.fromARGB(255, 54, 244, 139);
+
 //Color(0xFF79d3be);Color(0xFF76a7f4);
 const Color lightBlack = Color(0xFFAEAEAD);
 
