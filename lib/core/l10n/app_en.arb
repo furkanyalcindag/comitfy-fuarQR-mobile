@@ -4,6 +4,7 @@
   "email": "Email",
   "password": "Password",
   "success": "Success",
+  "iRead": "I read",
   "participantAllowed": "Valid participant",
   "errorEmailEmpty":  "Email cannot be empty",
   "errorPassEmpty": "Password cannot be empty",

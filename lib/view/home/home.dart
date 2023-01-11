@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fuar_qr/core/config/app_config.dart';
 import 'package:fuar_qr/core/services/participant/models/participant_validate_model.dart';
@@ -16,6 +17,7 @@ import 'package:fuar_qr/core/utility/constants.dart';
 import 'package:fuar_qr/core/utility/theme_choice.dart';
 import 'package:fuar_qr/core/utility/themes.dart';
 import 'package:fuar_qr/view/componentbuilders/qrscanner_user_information_builder.dart';
+import 'package:fuar_qr/view/components/slide_menu.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -33,6 +35,7 @@ class _HomeState extends State<Home> {
   bool _isFlashActive = false;
   bool _isUserInfoScrollScrollable = false;
   bool _isShowUserInfoScrollHasMoreDataButton = false;
+  bool _isShowUserInfoOnScreenEnabled = false;
   var scanAreaHeight;
   var scanAreaWidth;
   Barcode? result;
@@ -58,8 +61,11 @@ class _HomeState extends State<Home> {
     super.reassemble();
     if (Platform.isAndroid) {
       controller!.pauseCamera();
+      setState(() {
+        _isCameraPaused = true;
+      });
     }
-    controller!.resumeCamera();
+    _toggleCameraPause();
   }
 
   @override
@@ -122,11 +128,13 @@ class _HomeState extends State<Home> {
     // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
     scanAreaHeight = MediaQuery.of(context).size.height * 0.5;
     scanAreaWidth = scanAreaHeight;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _isUserInfoScrollScrollable =
-          _scrollController.position.maxScrollExtent > 0;
-      _controlScroll();
-    });
+    if (_isShowUserInfoOnScreenEnabled) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _isUserInfoScrollScrollable =
+            _scrollController.position.maxScrollExtent > 0;
+        _controlScroll();
+      });
+    }
 
     /* if (_isUserInfoScrollScrollable) {
       _scrollController.removeListener(_controlScroll);
@@ -142,55 +150,62 @@ class _HomeState extends State<Home> {
           Column(
             children: [
               Expanded(
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Stack(
-                      children: [
-                        ListView(
-                          shrinkWrap: true,
-                          controller: _scrollController,
-                          physics: const BouncingScrollPhysics(),
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                // User Detail Texts -------------------IMPORTANT
-                                if (_validatedParticipantData != null) ...[
-                                  if (_errorMessage == null) ...[
-                                    buildQrCodeUserInfo(
-                                      context: context,
-                                      info: {
-                                        AppLocalizations.of(context)!.name:
-                                            "${_validatedParticipantData?.fairParticipantDTO?.firstName} | ${_validatedParticipantData?.fairParticipantDTO?.lastName}\n",
-                                        AppLocalizations.of(context)!
-                                                .companyName:
-                                            "${_validatedParticipantData?.fairParticipantDTO?.companyName}\n",
-                                        AppLocalizations.of(context)!.telNo:
-                                            "${_validatedParticipantData?.fairParticipantDTO?.mobilePhone}\n",
-                                        AppLocalizations.of(context)!.email:
-                                            "${_validatedParticipantData?.fairParticipantDTO?.email}",
-                                      },
-                                    ),
-                                  ],
+                child: _isShowUserInfoOnScreenEnabled
+                    ? SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Stack(
+                            children: [
+                              ListView(
+                                shrinkWrap: true,
+                                controller: _scrollController,
+                                physics: const BouncingScrollPhysics(),
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      // User Detail Texts -------------------IMPORTANT
+                                      if (_validatedParticipantData !=
+                                          null) ...[
+                                        if (_errorMessage == null) ...[
+                                          buildQrCodeUserInfo(
+                                            context: context,
+                                            info: {
+                                              AppLocalizations.of(context)!
+                                                      .name:
+                                                  "${_validatedParticipantData?.fairParticipantDTO?.firstName} | ${_validatedParticipantData?.fairParticipantDTO?.lastName}\n",
+                                              AppLocalizations.of(context)!
+                                                      .companyName:
+                                                  "${_validatedParticipantData?.fairParticipantDTO?.companyName}\n",
+                                              AppLocalizations.of(context)!
+                                                      .telNo:
+                                                  "${_validatedParticipantData?.fairParticipantDTO?.mobilePhone}\n",
+                                              AppLocalizations.of(context)!
+                                                      .email:
+                                                  "${_validatedParticipantData?.fairParticipantDTO?.email}",
+                                            },
+                                          ),
+                                        ],
+                                      ],
+                                    ],
+                                  ),
                                 ],
-                              ],
-                            ),
-                          ],
-                        ),
-                        if (_isShowUserInfoScrollHasMoreDataButton)
-                          const Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Icon(
-                              Icons.arrow_downward,
-                              color: white,
-                            ),
+                              ),
+                              if (_isShowUserInfoScrollHasMoreDataButton)
+                                const Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Icon(
+                                    Icons.arrow_downward,
+                                    color: white,
+                                  ),
+                                ),
+                            ],
                           ),
-                      ],
-                    ),
-                  ),
-                ),
+                        ),
+                      )
+                    : const SizedBox(),
               ),
               // We wont use expanded since the scan are can change
               SizedBox(
@@ -367,11 +382,58 @@ class _HomeState extends State<Home> {
         });
       } else {
         if (data.valid != false) {
+          controller?.pauseCamera();
           setState(() {
+            _isCameraPaused = true;
             _validatedParticipantData = data;
             _errorMessage = null;
             _scannerBorderColor = Colors.green;
             _scannerOverlayColor = const Color.fromRGBO(0, 255, 0, 0.5);
+          });
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16.0))),
+              backgroundColor:
+                  Theme.of(context).dialogBackgroundColor.withOpacity(0.8),
+              content: ListView(
+                physics: const BouncingScrollPhysics(),
+                shrinkWrap: true,
+                children: [
+                  buildQrCodeUserInfo(
+                    context: context,
+                    textColor: Theme.of(context)
+                        .textTheme
+                        .subtitle1!
+                        .color!
+                        .withOpacity(0.9),
+                    info: {
+                      AppLocalizations.of(context)!.name:
+                          "${data.fairParticipantDTO?.firstName} | ${data.fairParticipantDTO?.lastName}\n",
+                      AppLocalizations.of(context)!.companyName:
+                          "${data.fairParticipantDTO?.companyName}\n",
+                      AppLocalizations.of(context)!.telNo:
+                          "${data.fairParticipantDTO?.mobilePhone}\n",
+                      AppLocalizations.of(context)!.email:
+                          "${data.fairParticipantDTO?.email}",
+                    },
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context, 'OK'),
+                  child: Text(AppLocalizations.of(context)!.iRead),
+                ),
+              ],
+            ),
+          ).then((value) {
+            setState(() {
+              _isCameraPaused = false;
+            });
+            controller?.resumeCamera();
+            _clearScan();
           });
           return;
         } else {

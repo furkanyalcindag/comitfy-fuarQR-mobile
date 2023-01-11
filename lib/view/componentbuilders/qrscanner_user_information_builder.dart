@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 Widget buildQrCodeUserInfo({
   required BuildContext context,
   required Map<String, String> info,
+  Color? textColor,
 }) {
   List<TextSpan> widgets = [];
   info.forEach(
@@ -17,9 +18,9 @@ Widget buildQrCodeUserInfo({
         TextSpan(
           text: "$key\n",
           style: Theme.of(context).textTheme.subtitle1!.merge(
-                const TextStyle(
+                TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: white,
+                  color: textColor ?? white,
                 ),
               ),
           children: [
@@ -27,10 +28,13 @@ Widget buildQrCodeUserInfo({
             TextSpan(
               text: value,
               style: Theme.of(context).textTheme.subtitle1!.merge(
-                    const TextStyle(
-                      color: white,
+                    TextStyle(
+                      color: textColor ?? white,
                     ),
                   ),
+            ),
+            WidgetSpan(
+              child: Divider(),
             ),
           ],
         ),

@@ -4,6 +4,7 @@
   "email": "Email",
   "password": "Şifre",
   "success": "Başarılı",
+  "iRead": "Okudum",
   "participantAllowed": "Geçerli katılımcı",
   "errorEmailEmpty": "Email boş olmamalı",
   "errorPassEmpty": "Şifre boş olmamalı",
