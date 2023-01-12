@@ -2,5 +2,21 @@
   "signIn": "Kayıt Ol",
   "login": "Giriş Yap",
   "email": "Email",
-  "password": "Password"
+  "password": "Password",
+  "success": "Success",
+  "iRead": "I read",
+  "participantAllowed": "Valid participant",
+  "errorEmailEmpty":  "Email cannot be empty",
+  "errorPassEmpty": "Password cannot be empty",
+  "errorPassLength": "Password length must be 8 or greater",
+  "errorLogin": "Please enter a valid user",
+  "loading": "Trying...",
+  "name": "Name/Surname: ",
+  "companyName": "Company: ",
+  "telNo": "TelNo: ",
+  "canBeScrolled": "Can be scrolled",
+  "errorDataNotCorrect": "Data not correct",
+  "errorParticipantNotAllowed": "Invalid participant",
+  "errorNoPermission": "Please allow camera from app settings",
+  "errorNoController": "Controller cant be reached"
 }

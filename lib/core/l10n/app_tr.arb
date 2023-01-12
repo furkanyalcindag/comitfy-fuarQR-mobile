@@ -1,7 +1,23 @@
 {
-  "signIn": "Sign In",
-  "login": "Login",
+  "signIn": "Kayıt Ol",
+  "login": "Giriş Yap",
   "email": "Email",
-  "password": "Password"
+  "password": "Şifre",
+  "success": "Başarılı",
+  "iRead": "Okudum",
+  "participantAllowed": "Geçerli katılımcı",
+  "errorEmailEmpty": "Email boş olmamalı",
+  "errorPassEmpty": "Şifre boş olmamalı",
+  "errorPassLength": "Şifre en az 8 karakter olmalı",
+  "errorLogin": "Lütfen geçerli bir kullanıcı girin",
+  "loading": "Deneniyor...",
+  "name": "İsim/Soyisim: ",
+  "companyName": "Firma: ",
+  "telNo": "TelNo: ",
+  "canBeScrolled": "Aşağı kaydırılabilir",
+  "errorDataNotCorrect": "Veri doğru değil",
+  "errorParticipantNotAllowed": "Geçersiz katılımcı",
+  "errorNoPermission": "Lütfen kamera iznini uygulama ayarından veriniz",
+  "errorNoController": "Denetleyiciye ulaşılamıyor"
 }
   

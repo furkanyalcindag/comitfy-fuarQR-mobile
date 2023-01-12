@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:fuar_qr/core/config/app_config.dart';
 import 'package:fuar_qr/core/utility/theme_notifier.dart';
+import 'package:fuar_qr/view/routers/authentication_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,9 +11,11 @@ import '../../mainCommon.dart';
 
 void main() {
   var configuredApp = AppConfig(
-    appDisplayName: "FuarQR",
+    appDisplayName: "FairQR",
     appInternalId: 1,
-    baseURL: '',
+    baseURL: 'http://89.252.140.57:8081',
+    loginPath: '/auth/login',
+    participantValidatePath: '/fair-participant/validate-participant/',
     child: MyApp(),
   );
   // Provides firebase and internet connection
@@ -27,6 +30,9 @@ void main() {
 
     runApp(MultiProvider(
       providers: [
+        Provider<AuthenticationManager>(
+          create: (context) => AuthenticationManager(context: context),
+        ),
         ChangeNotifierProvider<ThemeModeNotifier>(
           create: (_) => ThemeModeNotifier(ThemeMode.values[themeMode]),
         ),

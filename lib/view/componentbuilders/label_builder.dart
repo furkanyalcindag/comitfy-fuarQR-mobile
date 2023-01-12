@@ -9,13 +9,8 @@ Widget buildLabel({required BuildContext context, required text}) {
             text ?? "",
             textAlign: TextAlign.start,
             style: Theme.of(context).textTheme.subtitle1!.merge(
-                  TextStyle(
+                  const TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .color!
-                        .withOpacity(0.35),
                   ),
                 ),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:fuar_qr/core/config/app_config.dart';
 import 'package:fuar_qr/core/utility/theme_notifier.dart';
@@ -11,6 +12,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // Initialize things like firebase, AD service, google services
 void mainCommon() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Disable landcape
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 }
 
 class MyApp extends StatelessWidget {
