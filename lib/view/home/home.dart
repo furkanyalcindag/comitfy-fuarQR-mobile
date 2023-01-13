@@ -143,6 +143,97 @@ class _HomeState extends State<Home> {
       _scrollController.removeListener(_controlScroll);
     } */
     return Scaffold(
+      drawer: Drawer(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(80),
+                bottomRight: Radius.circular(80)),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Stack(
+                                children: [
+                                  ListView(
+                                    physics: const BouncingScrollPhysics(),
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.only(left: 12),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 8.0,
+                                                    vertical: 8.0),
+                                                child:
+                                                    Text("Kullanıcı Arayüzü"),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 10.0),
+                                                child: IconButton(
+                                                  tooltip: "Çıkış yap",
+                                                  onPressed: () {},
+                                                  icon:
+                                                      const Icon(Icons.logout),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      const Divider(),
+                                      ListTile(
+                                        title: const Text("TEST"),
+                                        onTap: () {},
+                                      ),
+                                    ],
+                                  ),
+                                  Positioned.fill(
+                                    right: 0,
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: padding / 2),
+                                        child: Container(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary
+                                              .withOpacity(0.2),
+                                          width: 4,
+                                          height: 40,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          )),
       body: Stack(
         children: <Widget>[
           // Dont put any widget on top of the QR Code scanner
