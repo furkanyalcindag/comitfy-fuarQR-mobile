@@ -412,7 +412,9 @@ class _HomeState extends State<Home> {
                     AppLocalizations.of(context)!.telNo:
                         "${data.fairParticipantDTO?.mobilePhone}\n",
                     AppLocalizations.of(context)!.email:
-                        "${data.fairParticipantDTO?.email}",
+                        "${data.fairParticipantDTO?.email}\n",
+                    AppLocalizations.of(context)!.city:
+                        "${data.fairParticipantDTO?.city}",
                   },
                 ),
               ),

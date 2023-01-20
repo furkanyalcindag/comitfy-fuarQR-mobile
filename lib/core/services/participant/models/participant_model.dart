@@ -5,6 +5,7 @@ class ParticipantModel {
   String? email;
   String? companyName;
   String? mobilePhone;
+  String? city;
 
   ParticipantModel({
     this.uuid,
@@ -13,6 +14,7 @@ class ParticipantModel {
     this.email,
     this.companyName,
     this.mobilePhone,
+    this.city,
   });
 
   factory ParticipantModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class ParticipantModel {
       email: json["email"] ?? " ",
       companyName: json["companyName"] ?? " ",
       mobilePhone: json["mobilePhone"] ?? " ",
+      city: json["city"] ?? " ",
     );
   }
 
@@ -34,6 +37,7 @@ class ParticipantModel {
     data['email'] = email;
     data['companyName'] = companyName;
     data['mobilePhone'] = mobilePhone;
+    data['city'] = city;
     
     return data;
   }
