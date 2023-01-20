@@ -300,10 +300,8 @@ class _HomeState extends State<Home> {
                             child: Material(
                               shape: const CircleBorder(),
                               clipBehavior: Clip.hardEdge,
-                              color: _isFlashActive
-                                  ? whiteSecondary.withOpacity(0.5)
-                                  : Themes.darkTheme.buttonTheme.colorScheme!
-                                      .background,
+                              color: Themes.darkTheme.buttonTheme.colorScheme!
+                                  .background,
                               child: IconButton(
                                   onPressed: () async {
                                     _clearScan();
@@ -397,29 +395,26 @@ class _HomeState extends State<Home> {
                   borderRadius: BorderRadius.all(Radius.circular(16.0))),
               backgroundColor:
                   Theme.of(context).dialogBackgroundColor.withOpacity(0.8),
-              content: ListView(
+              content: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                shrinkWrap: true,
-                children: [
-                  buildQrCodeUserInfo(
-                    context: context,
-                    textColor: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .color!
-                        .withOpacity(0.9),
-                    info: {
-                      AppLocalizations.of(context)!.name:
-                          "${data.fairParticipantDTO?.firstName} | ${data.fairParticipantDTO?.lastName}\n",
-                      AppLocalizations.of(context)!.companyName:
-                          "${data.fairParticipantDTO?.companyName}\n",
-                      AppLocalizations.of(context)!.telNo:
-                          "${data.fairParticipantDTO?.mobilePhone}\n",
-                      AppLocalizations.of(context)!.email:
-                          "${data.fairParticipantDTO?.email}",
-                    },
-                  ),
-                ],
+                child: buildQrCodeUserInfo(
+                  context: context,
+                  textColor: Theme.of(context)
+                      .textTheme
+                      .subtitle1!
+                      .color!
+                      .withOpacity(0.9),
+                  info: {
+                    AppLocalizations.of(context)!.name:
+                        "${data.fairParticipantDTO?.firstName} | ${data.fairParticipantDTO?.lastName}\n",
+                    AppLocalizations.of(context)!.companyName:
+                        "${data.fairParticipantDTO?.companyName}\n",
+                    AppLocalizations.of(context)!.telNo:
+                        "${data.fairParticipantDTO?.mobilePhone}\n",
+                    AppLocalizations.of(context)!.email:
+                        "${data.fairParticipantDTO?.email}",
+                  },
+                ),
               ),
               actions: <Widget>[
                 ElevatedButton(
