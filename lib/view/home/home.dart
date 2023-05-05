@@ -1,24 +1,20 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fuar_qr/core/config/app_config.dart';
 import 'package:fuar_qr/core/services/participant/models/participant_validate_model.dart';
 import 'package:fuar_qr/core/services/participant/participant_manager.dart';
+import 'package:fuar_qr/core/utility/cache_manager.dart';
 import 'package:fuar_qr/core/utility/constants.dart';
 import 'package:fuar_qr/core/utility/theme_choice.dart';
 import 'package:fuar_qr/core/utility/themes.dart';
 import 'package:fuar_qr/view/componentbuilders/qrscanner_user_information_builder.dart';
-import 'package:fuar_qr/view/components/slide_menu.dart';
+import 'package:fuar_qr/view/routers/login_router.dart';
+import 'package:get/route_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -221,7 +217,8 @@ class _HomeState extends State<Home> {
                                                           right: 10.0),
                                                   child: IconButton(
                                                     tooltip: "Çıkış yap",
-                                                    onPressed: () {},
+                                                    onPressed: () =>
+                                                        RemoveUser(),
                                                     icon: const Icon(
                                                         Icons.logout),
                                                   ),
@@ -633,5 +630,19 @@ class _HomeState extends State<Home> {
     controller?.dispose();
     _scrollController.removeListener(_controlScroll);
     super.dispose();
+  }
+
+  void RemoveUser() {
+    CacheManager.removeToken();
+    String successMsg = AppLocalizations.of(context)!.success;
+    Fluttertoast.showToast(
+        msg: successMsg,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        textColor: Colors.green,
+        fontSize: 16.0);
+    Get.off(() => LoginRouter());
   }
 }

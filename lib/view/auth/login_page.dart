@@ -5,7 +5,6 @@ import 'package:fuar_qr/core/config/app_config.dart';
 import 'package:fuar_qr/core/services/authentication/login_manager.dart';
 import 'package:fuar_qr/core/utility/cache_manager.dart';
 import 'package:fuar_qr/core/utility/constants.dart';
-import 'package:fuar_qr/core/utility/theme_choice.dart';
 import 'package:fuar_qr/view/componentbuilders/textfield_builder.dart';
 import 'package:fuar_qr/view/routers/login_router.dart';
 import 'package:get/route_manager.dart';
