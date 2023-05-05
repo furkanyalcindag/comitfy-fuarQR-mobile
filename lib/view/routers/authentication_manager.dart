@@ -20,6 +20,8 @@ class AuthenticationManager extends CacheManager {
     final token = await getToken();
     if (token != null) {
       isLogin = true;
+    } else {
+      isLogin = false;
     }
   }
 }
