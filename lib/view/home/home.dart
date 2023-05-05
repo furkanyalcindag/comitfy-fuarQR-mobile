@@ -167,6 +167,8 @@ class _HomeState extends State<Home> {
     } */
     return Scaffold(
       key: _scaffoldKey,
+      drawerEdgeDragWidth: MediaQuery.of(context).size.width *
+          0.5, // this will make full screen swipable for drawer
       drawer: ClipRRect(
         borderRadius: const BorderRadius.only(
             topRight: Radius.circular(50), bottomRight: Radius.circular(50)),
