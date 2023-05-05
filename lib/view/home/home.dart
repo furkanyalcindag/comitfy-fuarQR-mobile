@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,7 @@ class _HomeState extends State<Home> {
 
   // View control
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   Color _scannerBorderColor = primary;
   Color _scannerOverlayColor = const Color.fromRGBO(0, 0, 0, 80);
 
@@ -136,6 +138,27 @@ class _HomeState extends State<Home> {
       });
     }
 
+    TextStyle menuTitleTextTheme =
+        Theme.of(context).textTheme.titleSmall!.merge(
+              TextStyle(
+                color: Theme.of(context)
+                    .textTheme
+                    .titleSmall!
+                    .color!
+                    .withOpacity(1),
+              ),
+            );
+    TextStyle menuButtonsTextTheme =
+        Theme.of(context).textTheme.titleMedium!.merge(
+              TextStyle(
+                color: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .color!
+                    .withOpacity(1),
+              ),
+            );
+
     /* if (_isUserInfoScrollScrollable) {
       _scrollController.removeListener(_controlScroll);
       _scrollController.addListener(_controlScroll);
@@ -143,97 +166,104 @@ class _HomeState extends State<Home> {
       _scrollController.removeListener(_controlScroll);
     } */
     return Scaffold(
-      drawer: Drawer(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(80),
-                bottomRight: Radius.circular(80)),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: Stack(
-                                children: [
-                                  ListView(
-                                    physics: const BouncingScrollPhysics(),
-                                    children: [
-                                      Container(
-                                        margin: const EdgeInsets.only(left: 12),
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 8.0,
-                                                    vertical: 8.0),
-                                                child:
-                                                    Text("Kullanıcı Arayüzü"),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 10.0),
-                                                child: IconButton(
-                                                  tooltip: "Çıkış yap",
-                                                  onPressed: () {},
-                                                  icon:
-                                                      const Icon(Icons.logout),
+      key: _scaffoldKey,
+      drawer: ClipRRect(
+        borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(50), bottomRight: Radius.circular(50)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+          child: Drawer(
+              backgroundColor:
+                  Theme.of(context).scaffoldBackgroundColor.withOpacity(0.5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Stack(
+                                  children: [
+                                    ListView(
+                                      physics: const BouncingScrollPhysics(),
+                                      children: [
+                                        Container(
+                                          margin:
+                                              const EdgeInsets.only(left: 12),
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 8.0,
+                                                      vertical: 8.0),
+                                                  child: Text(
+                                                    "Kullanıcı Arayüzü",
+                                                    style: menuTitleTextTheme,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 10.0),
+                                                  child: IconButton(
+                                                    tooltip: "Çıkış yap",
+                                                    onPressed: () {},
+                                                    icon: const Icon(
+                                                        Icons.logout),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        const Divider(),
+                                        ThemeChoice(),
+                                      ],
+                                    ),
+                                    // The small line on the right side of the drawer
+                                    Positioned.fill(
+                                      right: 0,
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: padding / 2),
+                                          child: Container(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary
+                                                .withOpacity(0.2),
+                                            width: 4,
+                                            height: 40,
                                           ),
                                         ),
                                       ),
-                                      const Divider(),
-                                      ListTile(
-                                        title: const Text("TEST"),
-                                        onTap: () {},
-                                      ),
-                                    ],
-                                  ),
-                                  Positioned.fill(
-                                    right: 0,
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            right: padding / 2),
-                                        child: Container(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary
-                                              .withOpacity(0.2),
-                                          width: 4,
-                                          height: 40,
-                                        ),
-                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              )
-            ],
-          )),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              )),
+        ),
+      ),
       body: Stack(
         children: <Widget>[
           // Dont put any widget on top of the QR Code scanner
@@ -584,6 +614,16 @@ class _HomeState extends State<Home> {
       _scannerBorderColor = primary;
       _scannerOverlayColor = const Color.fromRGBO(0, 0, 0, 80);
     });
+  }
+
+  void closeMenuDrawer() {
+    if (_scaffoldKey.currentState != null) {
+      if (_scaffoldKey.currentState!.isDrawerOpen) {
+        _scaffoldKey.currentState!.closeDrawer();
+      } else if (_scaffoldKey.currentState!.isEndDrawerOpen) {
+        _scaffoldKey.currentState!.closeEndDrawer();
+      }
+    }
   }
 
   @override
