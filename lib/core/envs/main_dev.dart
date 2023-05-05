@@ -11,7 +11,7 @@ import '../../mainCommon.dart';
 
 void main() {
   var configuredApp = AppConfig(
-    appDisplayName: "FairQR",
+    appDisplayName: "Fuar Denetleyicisi",
     appInternalId: 1,
     baseURL: 'http://89.252.140.57:8081',
     loginPath: '/auth/login',

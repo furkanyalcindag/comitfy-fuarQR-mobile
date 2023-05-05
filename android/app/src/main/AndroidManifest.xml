@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.fuar_qr">
    <application
-        android:label="fuar_qr"
+        android:label="Comitfy: Fuar Denetleyicisi"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
