@@ -12,7 +12,7 @@ void main() {
   var configuredApp = AppConfig(
     appDisplayName: "FuarQR",
     appInternalId: 1,
-    baseURL: 'http://89.252.140.57:8081',
+    baseURL: 'https://fms.comitfy.com.tr',
     loginPath: '/auth/login',
     participantValidatePath: '/fair-participant/validate-participant/',
     child: MyApp(),
